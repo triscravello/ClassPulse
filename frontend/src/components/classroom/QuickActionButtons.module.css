@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.button {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background-color: #f3f4f6;
+  color: #111827;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Subtle click */
+.button:active {
+  transform: scale(0.95);
+}
+
+/* Disabled */
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Color-coded hover states */
+.positive:hover:not(:disabled) {
+  background-color: #dcfce7;
+  border-color: #22c55e;
+}
+
+.neutral:hover:not(:disabled) {
+  background-color: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+.negative:hover:not(:disabled) {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+/* Modal action */
+.modalButton {
+    margin-top: 1rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+}

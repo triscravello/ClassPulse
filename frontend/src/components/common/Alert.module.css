@@ -1,0 +1,81 @@
+/* Alert.module.css */
+.success {
+    background-color: #d1fa35;
+    color: #065f46;
+    border: 1px solid #86efac;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.warning {
+    background-color: #f3f9c3;
+    color: #78350f;
+    border: 1px solid #fde68a;
+}
+
+.info {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+/* Common container */
+.alertContainer {
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Slide/fade animation */
+.fadeIn {
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInAnim 0.3s forwards;
+}
+
+.fadeOut {
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeOutAnim 0.3s forwards;
+}
+
+@keyframes fadeInAnim {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutAnim {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Close button */
+.closeBtn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.closeBtn:hover {
+    opacity: 0.6;
+}
+
+.closeBtn:focus {
+    outline: none;
+}

@@ -1,0 +1,60 @@
+/* Page-level container */
+.container { 
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+/* Main heading */
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #111827; 
+}
+
+/* Message text */
+.message {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+/* Optional button */
+.homeButton {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #2563eb;
+    background-color: #2563eb;
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.homeButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    background-color: #1d4ed8;
+}
+
+.homeButton:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

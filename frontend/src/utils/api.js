@@ -1,0 +1,46 @@
+// src/utils/api.js
+import axios from 'axios';
+
+// Create an axios instance
+const api = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001/api',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+});
+
+// Request interceptor to attach JWT token automatically
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+)
+
+// Response interceptor to handle global errors
+api.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response) {
+            // Handle specific status codes
+            if (error.response.status === 401) {
+                // Unauthorized, possibly token expired
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('userData');
+                window.location.href = '/login'; // Redirect to login
+            }
+        }
+        return Promise.reject(error);
+    } 
+);
+
+export default api;

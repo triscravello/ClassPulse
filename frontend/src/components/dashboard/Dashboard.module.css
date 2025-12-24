@@ -1,0 +1,37 @@
+/* src/components/dashboard/Dashboard.module.css */
+
+.section {
+  margin-top: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.sectionDivider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent);
+  margin-bottom: 1rem;
+}
+
+.widgetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.widget {
+  animation: fadeUp 350ms ease-out both;
+}
+
+.widgetDelay1 { animation-delay: 50ms; }
+.widgetDelay2 { animation-delay: 100ms; }
+.widgetDelay3 { animation-delay: 150ms; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

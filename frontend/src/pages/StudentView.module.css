@@ -1,0 +1,116 @@
+/* StudentView.module.css */
+
+/* ===== Page ===== */
+
+.page {
+  max-width: 48rem; /* ~ max-w-3xl */
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ===== Header ===== */
+
+.backButton {
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+/* ===== Info Panel ===== */
+
+.infoPanel {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0,0,0,0.06));
+  margin-bottom: 1.5rem;
+  animation: fadeIn 180ms ease;
+}
+
+/* ===== Actions ===== */
+
+.actions {
+  margin: 1rem 0;
+}
+
+/* ===== Sections ===== */
+
+.section {
+  margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* ===== Logs ===== */
+
+.logList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logItem {
+  position: relative;
+  background: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  box-shadow: var(--shadow-sm, 0 1px 4px rgba(0,0,0,0.06));
+  animation: fadeSlideIn 160ms ease;
+}
+
+/* Hover reveal delete */
+.logActions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.logItem:hover .logActions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Report Summary ===== */
+
+.reportSection {
+  margin-top: 3rem;
+  animation: fadeSlideIn 220ms ease;
+}
+
+/* ===== Animations ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

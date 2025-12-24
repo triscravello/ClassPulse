@@ -1,0 +1,25 @@
+/* src/pages/Dashboard.module.css */
+
+.page {
+  min-height: 100vh;
+  padding: 1.5rem 2rem;
+  background-color: var(--app-bg, #f9fafb);
+  animation: pageFadeIn 250ms ease-out;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 1rem;
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

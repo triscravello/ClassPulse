@@ -1,0 +1,65 @@
+.card {
+    animation: fadeInUp 0.25s ease-out;
+}
+
+.input {
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.inputError {
+    border-color: #dc2626;
+    background-color: #fef2f2;
+    animation: shake 0.3s ease;
+}
+
+.inputError:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
+}
+
+.errorText {
+    color: #dc2626;
+    font-size: 0.875rem;
+}
+
+.submitBtn {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+    box-shadow: 0 2px 6px rgba(0,0,0, 0.12);
+}
+
+.submitBtn:active {
+    transform: scale(0.97);
+}
+
+.submitBtnLoading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}

@@ -1,0 +1,88 @@
+.card {
+    animation: fadeInUp 0.25s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input {
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
+}
+
+.inputError {
+    border-color: #dc2626;
+    background-color: #fef2f2;
+    animation: shake 0.3s ease;
+}
+
+.inputError:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.35)
+}
+
+.helperText {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.errorText {
+    color: #dc2626;
+    font-size: 0.875rem;
+}
+
+.passwordStrength {
+    height: 6px;
+    border-radius: 4px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.weak {
+    background-color: #f87171;
+}
+
+.medium {
+    background-color: #facc15;
+}
+
+.strong { 
+    background-color: #4ade80;
+}
+
+.submitBtn {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.submitBtn:hover:not(:disabled) {
+    box-shadow: 0 2px 6px rgba(0,0,0, 0.12);
+}
+
+.submitBtn:active {
+    transform: scale(0.97);
+}
+
+.submitBtn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
