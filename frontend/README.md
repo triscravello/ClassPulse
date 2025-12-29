@@ -105,7 +105,7 @@ npm start
 - Tailwind CSS: Layout, spacing, typography, responsive behavior
 - CSS Modules: Animation, component-specific states, hover, focus, and transitions
 
---
+---
 
 ## Roadmap
 
@@ -114,20 +114,20 @@ npm start
 - Attendance tracking
 - Dark mode
 
---
+---
 
 ## Contributing
 
 Pull requests are welcome. 
 For major changes, please open an issue first to discuss improvements.
 
---
+---
 
 ## License
 
 This project is licensed under the MIT License.
 
---
+---
 
 ## Author
 
