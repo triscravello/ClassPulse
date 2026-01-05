@@ -1,48 +1,71 @@
 // services/authService.js
-import api from "./api";
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-const handleError = (prefix, error) => {
-  throw new Error(
-    `${prefix}: ${error.response?.data?.message || error.message}`
-  );
+// Generate JWT
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-export const login = async (username, password) => {
-  try {
-    const { data } = await api.post("/auth/login", { username, password });
-    return data;
-  } catch (error) {
-    handleError("Login failed", error);
+// Signup service
+const signup = async (name, email, password) => {
+  // Normalize email
+  const normalizedEmail = email.toLowerCase().trim();
+
+  // Check if user exists
+  const existingUser = await User.findOne({ email: normalizedEmail });
+  if (existingUser) {
+    throw new Error("User already exists");
   }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create user
+  const newUser = await User.create({
+    name: name.trim(),
+    email: normalizedEmail,
+    password: hashedPassword,
+  });
+
+  // Generate token
+  const token = generateToken(newUser._id);
+
+  return {
+    user: { id: newUser._id, name: newUser.name, email: newUser.email },
+    token,
+  };
 };
 
-export const register = async (username, password, email) => {
-  try {
-    const { data } = await api.post("/auth/register", {
-      username,
-      password,
-      email,
-    });
-    return data;
-  } catch (error) {
-    handleError("Registration failed", error);
-  }
+// Login service
+const login = async (email, password) => {
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await User.findOne({ email: normalizedEmail });
+
+  if (!user) throw new Error("User not found");
+
+  // Compare password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
+
+  const token = generateToken(user._id);
+
+  return {
+    user: { id: user._id, name: user.name, email: user.email },
+    token,
+  };
 };
 
-export const logout = async () => {
-  try {
-    const { data } = await api.post("/auth/logout");
-    return data;
-  } catch (error) {
-    handleError("Logout failed", error);
-  }
+// Get user profile
+const getProfile = async (userId) => {
+  const user = await User.findById(userId).select("-password");
+  if (!user) throw new Error("User not found");
+  return user;
 };
 
-export const getCurrentUser = async () => {
-  try {
-    const { data } = await api.get("/auth/me");
-    return data;
-  } catch (error) {
-    handleError("Fetching current user failed", error);
-  }
+module.exports = {
+  signup,
+  login,
+  getProfile,
 };

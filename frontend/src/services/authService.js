@@ -17,12 +17,12 @@ export const login = async (username, password) => {
     }
 };
 
-export const register = async (username, password, email) => {
+export const signup = async (username, password, email) => {
     try {
-        const { data } = await api.post("/auth/register", { username, password, email });
+        const { data } = await api.post("/auth/signup", { username, password, email });
         return data;
     } catch (error) {
-        handleError("Registration failed", error);
+        handleError("Signup failed", error);
     }
 };
 

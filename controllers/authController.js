@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const authService = require("../services/authService");
 
 // Generate JWT
 const generateToken = (userId) => {
@@ -12,7 +13,6 @@ const generateToken = (userId) => {
 // Signup
 const signup = async (req, res) => {
   try {
-    console.log("Received body:", req.body);
     const { name, email, password } = req.body;
 
     // Check required fields
@@ -24,27 +24,10 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 8 characters" })
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
-
-    // Check if user already exists
-    const existing = await User.findOne({ email: normalizedEmail });
-    if (existing) {
-      return res.status(409).json({ message: "User already exists" });
-    }
-
-    // Create user
-    const newUser = await User.create({ name: name.trim(), email: normalizedEmail, password });
-
-    // Issue JWT
-    const token = generateToken(newUser._id);
+    const result = await authService.signup(name, email, password);
 
     return res.status(201).json({
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email
-      },
-      token,
+      ...result,
       message: "Signup successful"
     });
   } catch (err) {
@@ -62,24 +45,10 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Email and password required"});
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
-
-    const user = await User.findOne({ email: normalizedEmail });
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) 
-      return res.status(401).json({ message: "Invalid credentials" });
-
-    const token = generateToken(user._id);
+    const result = await authService.login(email, password);
 
     return res.status(200).json({
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-      token,
+      ...result,
       message: "Login successful"
     });
   } catch (err) {
@@ -91,10 +60,7 @@ const login = async (req, res) => {
 // Get Profile
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
+    const user = await authService.getProfile(req.user.id);
     return res.status(200).json({ user });
   } catch (err) {
     console.error("Profile error:", err);
