@@ -1,6 +1,7 @@
 .chartWrapper {
     width: 100%;
     position: relative;
+    height: 400px; /* fixed height */
     min-height: 300px; /* ensures height is never zero */
 }
 

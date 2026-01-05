@@ -27,8 +27,8 @@ const BehaviorChart = ({ data }) => {
     if (!data || !data.length) return <p>No behavior data to display.</p>;
 
     return (
-        <div style={styles.chartWrapper}>
-            <ResponsiveContainer>
+        <div className={styles.chartWrapper}>
+            <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                     data={data}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -37,7 +37,7 @@ const BehaviorChart = ({ data }) => {
                     <XAxis dataKey="type" />
                     <YAxis />
                     <Tooltip wrapperClassName={styles.tooltip} />
-                    <Legend wrapperStyle={{ justifyContent: 'center' }}/>
+                    <Legend wrapperStyle={styles.legend} />
                     <Bar dataKey="count">
                         {data.map((entry, index) => {
                             <Cell key={`cell-${index}`} fill={getBarColor(entry.type)} />
