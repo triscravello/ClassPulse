@@ -1,6 +1,8 @@
 // src/utils/api.js
 import axios from 'axios';
 
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001/api';
+
 // Create an axios instance
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001/api',
@@ -9,6 +11,15 @@ const api = axios.create({
     },
     withCredentials: true,
 });
+
+// Function to set the JWT token in headers
+export const setAuthToken = (token) => {
+    if (token) {
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    } else {
+        delete api.defaults.headers.common/Authorization;
+    }
+};
 
 // Request interceptor to attach JWT token automatically
 api.interceptors.request.use(
