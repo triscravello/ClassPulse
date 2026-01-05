@@ -42,7 +42,7 @@ const getClassReport = async (classId, from, to) => {
 
     // Map top 5 student
     const topStudents = logs
-        .sort((a, b) => b.totalPoints = a.totalPoints)
+        .sort((a, b) => b.totalPoints - a.totalPoints)
         .slice(0, 5)
         .map(log => {
             const student = students.find(s => s._id.toString() === log._id.toString());
