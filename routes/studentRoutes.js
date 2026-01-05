@@ -8,18 +8,18 @@ const router = express.Router({ mergeParams: true });
 router.use(protect);
 
 // GET /classes/:classId/students
-router.get("/:classId/students", getAllStudents);
+router.get("/", getAllStudents);
 
 // POST /classes/:classId/students
-router.post("/:classId/students", createStudent);
+router.post("/", createStudent);
 
 // GET /classes/:classId/students/:studentId
-router.get("/:classId/students/:studentId", getStudent);
+router.get("/:studentId", getStudent);
 
 // PUT /classes/:classId/students/:studentId
-router.put("/:classId/students/:studentId", updateStudent);
+router.put("/:studentId", updateStudent);
 
 // DELETE /classes/:classId/students/:studentId
-router.delete("/:classId/students/:studentId", removeStudent);
+router.delete("/:studentId", removeStudent);
 
 module.exports = router;

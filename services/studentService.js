@@ -17,7 +17,7 @@ async function authorizeClassAccess(classId, userId) {
  * Get all students in a class
  * @param {String} classId 
  */
-const getAllStudents = async (classId) => {
+const getAllStudents = async (classId, userId) => {
     await authorizeClassAccess(classId, userId);
     return await Student.find({ class: classId });
 };

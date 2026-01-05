@@ -26,7 +26,7 @@ app.use(express.json());
 // use routes 
 app.use("/api/auth", authRoutes);
 app.use("/api/classes", classRoutes);
-app.use("/api/classes", studentRoutes);
+app.use("/api/classes/:classId/students", studentRoutes);
 app.use("/api/behaviorlogs", behaviorLogRoutes);
 app.use("/api/reports", reportRoutes);
 
