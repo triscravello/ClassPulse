@@ -5,6 +5,7 @@ const Student = require('../models/Students');
 const BehaviorLog = require('../models/BehaviorLogs');
 const { Parser } = require('json2csv');
 const { createPDFBuffer } = require('../utils/pdfExport');
+const reportService = require('../services/reportService');
 
 // GET a summary report by class
 const getClassReport = async (req, res) => {
@@ -12,62 +13,15 @@ const getClassReport = async (req, res) => {
         const { classId } = req.params;
         const { from, to } = req.query;
         
-        const classData = await Class.findById(classId)
-        if (!classData) {
-            return res.status(404).json({ message: 'Class not found' });
-        }
-
-        const students = await Student.find({ class: classId });
-        const studentIds = students.map(s => s._id);
-
-        const dateFilter = {};
-        if (from) dateFilter.$gte = new Date(from);
-        if (to) dateFilter.$lte = new Date(to);
-
-        const logFilter = { student: { $in: studentIds } };
-        if (from || to) logFilter.occuredAt = dateFilter;
-
-        const logs = await BehaviorLog.aggregate([
-            { $match: logFilter },
-            { 
-                $group: {
-                    _id: "$student",
-                    totalPoints: { $sum: "$value" },
-                    totalLogs: { $sum: 1 }
-                }
-            }
-        ]);
-
-        const totalLogs = logs.reduce((sum, log) => sum + log.totalLogs, 0);
-        const avgPoint = logs.length 
-            ? (logs.reduce((sum, log) => sum + log.totalPoints, 0) / logs.length) 
-            : 0;
-        
-        // Sort top students and populate first_name, last_name
-        const topStudents = await Promise.all(
-            logs
-            .sort((a, b) => b.totalPoints - a.totalPoints)
-            .slice(0, 5)
-            .map(async log => {
-                const student = await Student.findById(log._id).select('first_name last_name');
-                return {
-                    student_id: log._id,
-                    first_name: student.first_name,
-                    last_name: student.last_name,
-                    total_points: log.totalPoints
-                };
-            })
-        );
-        
-        return res.json({
-            class_id: classId,
-            total_logs: totalLogs,
-            avg_points: avgPoint,
-            top_students: topStudents
-        });
-
+        const report = await reportService.getClassReport(classId, from, to);
+        return res.json(report);
     } catch (error) {
         console.error("Error generating class report:", error);
+
+        if (error.message === 'Class not found') {
+            return res.status(404).json({ message: error.message })
+        }
+
         res.status(500).json({ message: 'Server error' });
     }
 };
@@ -78,55 +32,15 @@ const getStudentReport = async (req, res) => {
         const { studentId } = req.params;
         const { from, to } = req.query;
 
-        const student = await Student.findById(studentId);
-        if (!student) {
-            return res.status(404).json({ message: 'Students not found' });
-        }
-
-        // Build date filter
-        const dateFilter = {};
-        if (from) dateFilter.$gte = new Date(from);
-        if (to) dateFilter.$lte = new Date(to);  
-        
-        const logFilter = { student: studentId };
-        if (from || to) logFilter.createdAt = dateFilter;
-
-        const logs = await BehaviorLog.find(logFilter);
-
-        if (!logs.length) {
-            return res.json({
-                student_id: studentId,
-                participation_rate: 0,
-                behavior_score: 0
-            });
-        }
-
-        const totalLogs = logs.length;
-        const totalPoints = logs.reduce((sum, log) => sum + log.points, 0);
-
-        // Unique days with logs
-        const uniqueDays = new Set(
-            logs.map(log => log.createdAt.toISOString().slice(0,10))
-        ).size;
-
-        // Participation rate = participation logs / unique days with logs
-        const participation_rate = Number(
-            (totalLogs / uniqueDays).toFixed(2)
-        );
-        
-        // Behavior score = average points per log
-        const behavior_score = Number(
-            (totalPoints / totalLogs).toFixed(2)
-        ) ;
-        
-        return res.json({
-            student_id: studentId,
-            participation_rate,
-            behavior_score
-        });
-
+        const report = await reportService.getStudentReport(studentId, from, to);
+        return res.json(report);
     } catch (error) {
         console.error("Error generating student report:", error);
+
+        if (error.message === 'Student not found') {
+            return res.status(404).json({ message: error.message })
+        }
+        
         res.status(500).json({ message: 'Server error' });
     }
 };
