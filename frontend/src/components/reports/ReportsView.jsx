@@ -147,14 +147,14 @@ const ReportsView = () => {
                     <h2 className={styles.sectionTitle}>Top Students</h2>
 
                     <div className={chartStyles.chartWrapper}>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={topStudentsData}>
+                        <ResponsiveContainer width="100%" aspect={2}>
+                            <BarChart data={topStudentsData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
+                                <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} angle={-20} textAnchor='end'/>
                                 <YAxis />
                                 <Tooltip contentStyle={{}} wrapperClassName={chartStyles.tooltip} />
-                                <Legend />
-                                <Bar dataKey="points">
+                                <Legend wrapperClassName={chartStyles.legend} />
+                                <Bar dataKey="points" barSize={30}>
                                     {topStudentsData.map((student, index) => (
                                         <Cell
                                             key={`cell-${index}`}
