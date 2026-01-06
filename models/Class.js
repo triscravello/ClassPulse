@@ -8,9 +8,20 @@ const classSchema = new mongoose.Schema (
             ref: "User",
             required: true
         },
-        subject: { type: String }
+        subject: { type: String, enum: ["Math", "Science", "English", "History", "Other"], default: "Other" }
     }, 
-    { timestamps: true }
+    { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+// Index for performance and safety
+classSchema.index({ teacher: 1 });
+classSchema.index({ name: 1, teacher: 1}, { unique: true }); // Prevent duplicate class names per teacher
+
+// Virtuals
+classSchema.virtual('students', {
+    ref: 'Student',
+    localField: '_id',
+    foreignField: 'class'
+});
 
 module.exports = mongoose.model("Class", classSchema);
