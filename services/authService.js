@@ -5,6 +5,9 @@ const bcrypt = require("bcryptjs");
 
 // Generate JWT
 const generateToken = (userId) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET not defined");
+  }
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
@@ -40,10 +43,16 @@ const signup = async (name, email, password) => {
 
 // Login service
 const login = async (email, password) => {
+  if (!email || !password) {
+    return { error: "Email and password are required" };
+  }
+
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await User.findOne({ email: normalizedEmail });
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
 
   if (!user) throw new Error("User not found");
+
+  if (!user.password) return { error: "Password not set for this user" };
 
   // Compare password
   const isMatch = await bcrypt.compare(password, user.password);

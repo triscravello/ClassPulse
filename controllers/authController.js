@@ -3,13 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const authService = require("../services/authService");
 
-// Generate JWT
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
-};
-
 // Signup
 const signup = async (req, res) => {
   try {
@@ -26,6 +19,10 @@ const signup = async (req, res) => {
 
     const result = await authService.signup(name, email, password);
 
+    if (result.error) {
+      return res.status(400).json({ message: result.error });
+    }
+
     return res.status(201).json({
       ...result,
       message: "Signup successful"
@@ -41,11 +38,11 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {   // fixed logical OR
-      return res.status(400).json({ message: "Email and password required"});
-    }
-
     const result = await authService.login(email, password);
+
+    if (result.error) {
+      return res.status(401).json({ message: result.error });
+    }
 
     return res.status(200).json({
       ...result,
@@ -53,7 +50,7 @@ const login = async (req, res) => {
     });
   } catch (err) {
     console.error("Login error:", err);
-    return res.status(500).json({ message: "Server error during logn" });
+    return res.status(500).json({ message: "Server error during login" });
   }
 };
 
@@ -61,6 +58,9 @@ const login = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const user = await authService.getProfile(req.user.id);
+    if (user.error) {
+      return res.status(404).json({ message: user.error });
+    }
     return res.status(200).json({ user });
   } catch (err) {
     console.error("Profile error:", err);
