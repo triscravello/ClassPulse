@@ -52,10 +52,13 @@ const updateClass = async (classId, data, teacherId) => {
   if (!foundClass) throw new Error('Class not found.');
   if (foundClass.teacher.toString() !== teacherId) throw new Error('Not authorized.');
 
-  if (!data.name) throw new Error('Name is required.');
+  if (data.name !== undefined) {
+    foundClass.name = data.name;
+  }
 
-  foundClass.name = data.name;
-  foundClass.subject = data.subject ?? foundClass.subject;
+  if (data.subject !== undefined) {
+    foundClass.subject = data.subject;
+  }
 
   return await foundClass.save();
 };
