@@ -7,7 +7,7 @@ const Class = require('../models/Class');
  * @param {String} teacherId
  */
 const getAllClasses = async (teacherId) => {
-  return await Class.find({ teacher: teacherId });
+  return await Class.find({ teacher: teacherId }).lean();
 };
 
 /**
