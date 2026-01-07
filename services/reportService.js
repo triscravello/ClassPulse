@@ -1,9 +1,13 @@
+// services/reportService.js
+
 const Class = require('../models/Class');
 const Student = require('../models/Students');
 const BehaviorLog = require('../models/BehaviorLogs');
+const mongoose = require('mongoose');
 
 /**
  * Helper to build a date filter with optional from/to
+ * Works even if occurredAt is stored as string
  */
 const buildDateFilter = (from, to) => {
     const filter = {};
@@ -24,23 +28,28 @@ const buildDateFilter = (from, to) => {
  * @returns {Object} class report data
  */
 const getClassReport = async (classId, from, to) => {
+    // Ensure class exists
     const classData = await Class.findById(classId);
     if (!classData) throw new Error('Class not found');
 
+    // Fetch all students in this class
     const students = await Student.find({ class: classId });
     const studentIds = students.map(s => s._id);
 
+    // Build date filter
     const dateFilter = buildDateFilter(from, to);
 
-    const logFilter = { 
-        class: classId,
+    // Build aggregation match stage
+    const matchStage = {
+        class: new mongoose.Types.ObjectId(classId),
         student: { $in: studentIds }
     };
-    if (dateFilter) logFilter.occurredAt = dateFilter;
+
+    if (dateFilter) matchStage.occurredAt = dateFilter;
 
     const logs = await BehaviorLog.aggregate([
-        { $match: logFilter },
-        { 
+        { $match: matchStage },
+        {
             $group: {
                 _id: "$student",
                 totalPoints: { $sum: "$value" },
@@ -49,10 +58,17 @@ const getClassReport = async (classId, from, to) => {
         }
     ]);
 
+    // Calculate total logs and average points
     const totalLogs = logs.reduce((sum, log) => sum + log.totalLogs, 0);
     const totalPoints = logs.reduce((sum, log) => sum + log.totalPoints, 0);
-    const avgPoints = students.length ? totalPoints / students.length : 0;
+    
+    // Average points per log
+    const avgPointsPerLog = totalLogs ? totalPoints / totalLogs : 0;
 
+    // Average points per student
+    const avgPointsPerStudent = students.length ? totalPoints / students.length : 0;
+
+    // Determine top students
     const topStudents = logs
         .sort((a, b) => b.totalPoints - a.totalPoints)
         .slice(0, 5)
@@ -69,7 +85,8 @@ const getClassReport = async (classId, from, to) => {
     return {
         class_id: classId,
         total_logs: totalLogs,
-        avg_points: Number(avgPoints.toFixed(2)),
+        avg_points_per_log: Number(avgPointsPerLog.toFixed(2)),
+        avg_points_per_student: Number(avgPointsPerStudent.toFixed(2)),
         top_students: topStudents
     };
 };
@@ -78,7 +95,8 @@ const getClassReport = async (classId, from, to) => {
  * Get an individual student's report
  * @param {String} studentId
  * @param {Date|string} from - optional
- * @param {Date|string} to - optional 
+ * @param {Date|string} to - optional
+ * @returns {Object} student report data
  */
 const getStudentReport = async (studentId, from, to) => {
     const student = await Student.findById(studentId);
@@ -87,17 +105,33 @@ const getStudentReport = async (studentId, from, to) => {
     const dateFilter = buildDateFilter(from, to);
 
     const logFilter = { student: studentId };
-    if (dateFilter) logFilter.occurredAt = dateFilter;
+    if (dateFilter) {
+        // Use $expr to handle string or Date
+        logFilter.$expr = {
+            $and: [
+                dateFilter.$gte
+                    ? { $gte: [{ $toDate: "$occurredAt" }, dateFilter.$gte] }
+                    : null,
+                dateFilter.$lte
+                    ? { $lte: [{ $toDate: "$occurredAt" }, dateFilter.$lte] }
+                    : null
+            ].filter(Boolean)
+        };
+    }
 
     const logs = await BehaviorLog.find(logFilter);
 
-    if (!logs.length) return { student_id: studentId, participation_rate: 0, behavior_score: 0 };
+    if (!logs.length) return {
+        student_id: studentId,
+        participation_rate: 0,
+        behavior_score: 0
+    };
 
     const totalLogs = logs.length;
     const totalPoints = logs.reduce((sum, log) => sum + log.value, 0);
 
     const uniqueDays = new Set(
-        logs.map(log => log.occurredAt.toISOString().slice(0,10))
+        logs.map(log => new Date(log.occurredAt).toISOString().slice(0, 10))
     ).size;
 
     return {

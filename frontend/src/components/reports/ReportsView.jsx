@@ -64,7 +64,10 @@ const ReportsView = () => {
                 if (fromDate) params.from = fromDate;
                 if (toDate) params.to = toDate;
 
+                console.log('Fetching report', selectedClassId, params)
+
                 const res = await api.get(`/reports/class/${selectedClassId}`, { params });
+                console.log('Report data:', res.data);
                 setReportData(res.data);
             } catch (err) {
                 console.error(err);
@@ -137,7 +140,15 @@ const ReportsView = () => {
                 </p>
                 <p>
                     <strong>Average Points per Student:</strong>{' '}
-                    {typeof reportData.avg_points === 'number' ? reportData.avg_points.toFixed(2) : '-'}
+                    {reportData.avg_points_per_student !== null
+                        ? Number(reportData.avg_points_per_student).toFixed(2)
+                        : '0.00'}
+                </p>
+                <p>
+                    <strong>Average Points per Log:</strong>{' '}
+                    {reportData.avg_points_per_log !== null
+                        ? Number(reportData.avg_points_per_log).toFixed(2)
+                        : '0.00'}
                 </p>
             </div>
 

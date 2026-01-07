@@ -38,4 +38,4 @@ const behaviorLogSchema = new mongoose.Schema(
 behaviorLogSchema.index({ student: 1, occurredAt: -1 });
 behaviorLogSchema.index({ class: 1, occurredAt: -1 });
 
-module.exports = mongoose.model("BehaviorLog", behaviorLogSchema);
+module.exports = mongoose.model("Behavior Log", behaviorLogSchema);
