@@ -21,6 +21,7 @@ export const UserProvider = ({ children }) => {
     }, []);
 
     const login = (userData, token) => {
+        console.log('UserContext.login called with:', { userData, token });
         setUser(userData);
         setToken(token);
         setAuthToken(token);
