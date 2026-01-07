@@ -157,7 +157,7 @@ const ReportsView = () => {
                 <div className={styles.section}>
                     <h2 className={styles.sectionTitle}>Top Students</h2>
 
-                    <div className={chartStyles.chartWrapper}>
+                    <div className={chartStyles.chartWrapper} style={{ width: '100%', minHeight:300 }}>
                         <ResponsiveContainer width="100%" aspect={2}>
                             <BarChart data={topStudentsData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
