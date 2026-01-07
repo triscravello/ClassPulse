@@ -1,6 +1,6 @@
 const express = require('express');
-const { getClassReport, getStudentReport, exportReport } = require('../controllers/reportController');
-const protect = require('../middleware/authMiddleware');
+const { getClassReport, getStudentReport, exportReport } = require('../../controllers/reportController');
+const protect = require('../../middleware/authMiddleware');
 const router = express.Router();
 
 // GET /reports/class/:classId

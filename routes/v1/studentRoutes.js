@@ -1,6 +1,6 @@
 const express = require('express');
-const { getAllStudents, createStudent, getStudent, updateStudent, removeStudent } = require('../controllers/studentController');
-const protect = require('../middleware/authMiddleware');
+const { getAllStudents, createStudent, getStudent, updateStudent, removeStudent } = require('../../controllers/studentController');
+const protect = require('../../middleware/authMiddleware');
 
 const router = express.Router({ mergeParams: true });
 

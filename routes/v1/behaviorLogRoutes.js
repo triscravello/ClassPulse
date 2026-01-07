@@ -1,6 +1,6 @@
 const express = require('express');
-const { getAllBehaviorLogs, createBehaviorLog, getBehaviorLogsByClass, deleteBehaviorLog } = require('../controllers/behaviorLogController');
-const protect = require('../middleware/authMiddleware');
+const { getAllBehaviorLogs, createBehaviorLog, getBehaviorLogsByClass, deleteBehaviorLog } = require('../../controllers/behaviorLogController');
+const protect = require('../../middleware/authMiddleware');
 
 
 const router = express.Router();

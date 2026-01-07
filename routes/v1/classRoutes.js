@@ -1,6 +1,6 @@
 const express = require('express');
-const { getClasses, createClass, getClassById, updateClass, removeClass } = require("../controllers/classController");
-const protect = require('../middleware/authMiddleware');
+const { getClasses, createClass, getClassById, updateClass, removeClass } = require("../../controllers/classController");
+const protect = require('../../middleware/authMiddleware');
 
 const router = express.Router();
 

@@ -4,11 +4,11 @@ const cors = require('cors');
 
 const connectDB = require('./config/db');
 
-const authRoutes = require('./routes/authRoutes');
-const classRoutes = require('./routes/classRoutes');
-const studentRoutes = require('./routes/studentRoutes');
-const behaviorLogRoutes = require('./routes/behaviorLogRoutes');
-const reportRoutes = require('./routes/reportRoutes');
+const authRoutes = require('./routes/v1/authRoutes');
+const classRoutes = require('./routes/v1/classRoutes');
+const studentRoutes = require('./routes/v1/studentRoutes');
+const behaviorLogRoutes = require('./routes/v1/behaviorLogRoutes');
+const reportRoutes = require('./routes/v1/reportRoutes');
 
 dotenv.config();
 connectDB();
