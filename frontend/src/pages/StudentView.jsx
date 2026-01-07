@@ -111,11 +111,11 @@ const StudentView = () => {
                     <div className={styles.logList}>
                         {logs.map(log => (
                             <div key={log._id} className={styles.logItem}>
-                                <p><strong>Type:</strong> {log.type}</p>
+                                <p><strong>Type:</strong> {log.category}</p>
                                 {log.comment && <p><strong>Note:</strong> {log.comment}</p>}
                                 {log.value != null && <p><strong>Points:</strong> {log.value}</p>}
                                 <p className="text-gray-500 text-sm">
-                                    {new Date(log.createdAt).toLocaleString()}
+                                    {new Date(log.occurredAt).toLocaleString()}
                                 </p>
 
                                 <div className={styles.logActions}>

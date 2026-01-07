@@ -4,7 +4,7 @@ import Modal from '../common/Modal';
 import styles from './BehaviorLogForm.module.css';
 
 const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
-    const [type, setType] = useState('');
+    const [category, setCategory] = useState('');
     const [comment, setComment] = useState('');
     const [value, setValue] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
 
         try {
             const response = await api.post(`/behaviorlogs/student/${studentId}`, {
-                type,
+                category, // change from 'type' to 'category' to match backend
                 comment,
                 value
             });
@@ -42,9 +42,9 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input
                         className={styles.input}
-                        placeholder="Type (Positive, Negative, etc.)"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
+                        placeholder="Category (Positive, Negative, etc.)"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                         required
                     />
                     <textarea

@@ -81,7 +81,7 @@ const exportReport = async (req, res) => {
             type: log.type,
             comment: log.comment,
             points: log.value,
-            created_at: log.createdAt
+            occurred_at: log.occurredAt
         }));
 
         if (type === 'csv') {

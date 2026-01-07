@@ -1,14 +1,26 @@
-// services/reportService.js
-
 const Class = require('../models/Class');
 const Student = require('../models/Students');
 const BehaviorLog = require('../models/BehaviorLogs');
 
 /**
+ * Helper to build a date filter with optional from/to
+ */
+const buildDateFilter = (from, to) => {
+    const filter = {};
+    if (from) filter.$gte = new Date(from);
+    if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        filter.$lte = toDate;
+    }
+    return Object.keys(filter).length ? filter : null;
+};
+
+/**
  * Get a summary report by class
  * @param {String} classId
- * @param {Date} from - optional
- * @param {Date} to - optional
+ * @param {Date|string} from - optional
+ * @param {Date|string} to - optional
  * @returns {Object} class report data
  */
 const getClassReport = async (classId, from, to) => {
@@ -17,14 +29,15 @@ const getClassReport = async (classId, from, to) => {
 
     const students = await Student.find({ class: classId });
     const studentIds = students.map(s => s._id);
-    
-    const dateFilter = {};
-    if (from) dateFilter.$gte = new Date(from);
-    if (to) dateFilter.$lte = new Date(to);
-    
-    const logFilter = { student: { $in: studentIds } };
-    if (from || to) logFilter.occuredAt = dateFilter;
-    
+
+    const dateFilter = buildDateFilter(from, to);
+
+    const logFilter = { 
+        class: classId,
+        student: { $in: studentIds }
+    };
+    if (dateFilter) logFilter.occurredAt = dateFilter;
+
     const logs = await BehaviorLog.aggregate([
         { $match: logFilter },
         { 
@@ -38,9 +51,8 @@ const getClassReport = async (classId, from, to) => {
 
     const totalLogs = logs.reduce((sum, log) => sum + log.totalLogs, 0);
     const totalPoints = logs.reduce((sum, log) => sum + log.totalPoints, 0);
-    const avgPoints = totalLogs ? totalPoints / totalLogs : 0;
+    const avgPoints = students.length ? totalPoints / students.length : 0;
 
-    // Map top 5 student
     const topStudents = logs
         .sort((a, b) => b.totalPoints - a.totalPoints)
         .slice(0, 5)
@@ -65,46 +77,33 @@ const getClassReport = async (classId, from, to) => {
 /**
  * Get an individual student's report
  * @param {String} studentId
- * @param {Date} from - optional
- * @param {Date} to - optional 
+ * @param {Date|string} from - optional
+ * @param {Date|string} to - optional 
  */
 const getStudentReport = async (studentId, from, to) => {
     const student = await Student.findById(studentId);
     if (!student) throw new Error('Student not found');
 
-    const dateFilter = {};
-    if (from) dateFilter.$gte = new Date(from);
-    if (to) dateFilter.$lte = new Date(to);
+    const dateFilter = buildDateFilter(from, to);
 
     const logFilter = { student: studentId };
-    if (from || to) logFilter.createdAt = dateFilter;
+    if (dateFilter) logFilter.occurredAt = dateFilter;
 
     const logs = await BehaviorLog.find(logFilter);
 
     if (!logs.length) return { student_id: studentId, participation_rate: 0, behavior_score: 0 };
 
     const totalLogs = logs.length;
-    const totalPoints = logs.reduce((sum, log) => sum + log.points, 0);
+    const totalPoints = logs.reduce((sum, log) => sum + log.value, 0);
 
-    // Unique days with logs
     const uniqueDays = new Set(
-        logs.map(log => log.createdAt.toISOString().slice(0,10))
+        logs.map(log => log.occurredAt.toISOString().slice(0,10))
     ).size;
-
-    // Participation rate = participation logs / unique days with logs
-    const participation_rate = Number(
-        (totalLogs / uniqueDays).toFixed(2)
-    );
-        
-    // Behavior score = average points per log
-    const behavior_score = Number(
-        (totalPoints / totalLogs).toFixed(2)
-    );
 
     return {
         student_id: studentId,
-        participation_rate,
-        behavior_score
+        participation_rate: Number((totalLogs / uniqueDays).toFixed(2)),
+        behavior_score: Number((totalPoints / totalLogs).toFixed(2))
     };
 };
 
