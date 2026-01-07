@@ -38,10 +38,10 @@ const LoginForm = () => {
       const response = await api.post('/auth/login', { email, password });
       const { user, token } = response.data;
 
+      console.log('FULL LOGIN RESPONSE:', response.data);
+
       // Persist login
       login(user, token); // Updates context
-      localStorage.setItem('authToken', token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       navigate('/dashboard');
     } catch (err) {
