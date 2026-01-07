@@ -23,12 +23,14 @@ app.use(cors({
 
 app.use(express.json());
 
+const API_VERSION = '/api/v1';
+
 // use routes 
-app.use("/api/auth", authRoutes);
-app.use("/api/classes", classRoutes);
-app.use("/api/classes/:classId/students", studentRoutes);
-app.use("/api/behaviorlogs", behaviorLogRoutes);
-app.use("/api/reports", reportRoutes);
+app.use(`${API_VERSION}/auth`, authRoutes);
+app.use(`${API_VERSION}/classes`, classRoutes);
+app.use(`${API_VERSION}/classes/:classId/students`, studentRoutes);
+app.use(`${API_VERSION}/behaviorlogs`, behaviorLogRoutes);
+app.use(`${API_VERSION}/reports`, reportRoutes);
 
 app.get("/", (req, res) => res.send("Welcome to ClassPulse API"));
 
