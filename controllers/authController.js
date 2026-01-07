@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const authService = require("../services/authService");
 
+// Helper: generate JWT
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
+
 // Signup
 const signup = async (req, res) => {
   try {
@@ -23,8 +28,17 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: result.error });
     }
 
+    // Extract user from result 
+    const user = result.user;
+    const token = generateToken(user);
+
     return res.status(201).json({
-      ...result,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email, 
+        role: user.role
+      },
       message: "Signup successful"
     });
   } catch (err) {
@@ -38,14 +52,40 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Find user
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Create JWT
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d'}
+    );
+
     const result = await authService.login(email, password);
 
     if (result.error) {
       return res.status(401).json({ message: result.error });
     }
 
+    // Respond with token and user
     return res.status(200).json({
-      ...result,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      token,
       message: "Login successful"
     });
   } catch (err) {
