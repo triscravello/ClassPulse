@@ -1,65 +1,87 @@
 .card {
-    animation: fadeInUp 0.25s ease-out;
+  animation: fadeInUp 0.25s ease-out;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 .input {
-    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  background-color: #f9fafb;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.25);
 }
 
 .inputError {
-    border-color: #dc2626;
-    background-color: #fef2f2;
-    animation: shake 0.3s ease;
+  border-color: #dc2626;
+  background-color: #fef2f2;
+  animation: shake 0.3s ease;
 }
 
 .inputError:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 2px rgba(220,38,38,0.25);
 }
 
-.errorText {
-    color: #dc2626;
-    font-size: 0.875rem;
+.fieldError {
+  color: #b91c1c;
+  background-color: #fee2e2;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.25s ease-out;
+  margin-top: 4px;
 }
 
 .submitBtn {
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 9999px;
+  font-weight: 600;
+  background-color: #2563eb;
+  color: #ffffff;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
 }
 
 .submitBtn:hover:not(:disabled) {
-    box-shadow: 0 2px 6px rgba(0,0,0, 0.12);
+  background-color: #1e40af;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
 .submitBtn:active {
-    transform: scale(0.97);
+  transform: scale(0.97);
 }
 
 .submitBtnLoading {
-    pointer-events: none;
-    opacity: 0.7;
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-    75% { transform: translateX(-4px); }
-    100% { transform: translateX(0); }
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Force toast above all content */
+.react-hot-toast {
+  z-index: 9999 !important;
 }
