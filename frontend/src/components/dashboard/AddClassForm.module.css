@@ -13,6 +13,17 @@
     animation: fadeInUp 0.5s forwards;
 }
 
+.formCard:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #374151; /* neutral gray */
+}
+
 /* Input fields */
 .inputField {
     width: 100%;
@@ -50,6 +61,12 @@
     transform: scale(0.97);
 }
 
+.submitButton:disabled {
+    background-color: #a5b4fc;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Loading state for submit button */
 .loading {
     position: relative;
@@ -66,9 +83,18 @@
     height: 1.2rem;
     margin: -0.6rem 0 0 -0.6rem;
     border: 2px solid #fff;
-    border-top: 2px solid rgba(225, 255, 255, 0.3);
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+/* Input error for inline validation */
+.inputError {
+    border-color: #dc2626;
+}
+
+.inputError:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
 }
 
 /* Animations */
@@ -82,5 +108,14 @@
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .formCard {
+        animation: none;
+        transform: none;
+        opacity: 1;
     }
 }

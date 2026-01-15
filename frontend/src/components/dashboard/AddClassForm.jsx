@@ -1,31 +1,28 @@
 // src/components/dashboard/AddClassForm.jsx
 import { useState } from 'react';
-import api from '../../utils/api';
-import Alert from '../common/Alert';
+import api, { getErrorMessage } from '../../utils/api';
 import styles from './AddClassForm.module.css';
+import { notifySuccess, notifyError } from "../../utils/notify";
 
 const AddClassForm = ({ onClassAdded }) => {
     const [className, setClassName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(null);
-    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!className.trim()) return;
+
         setLoading(true);
-        setSuccess(null);
-        setError(null);
 
         try {
-            const response = await api.post('/classes', { name: className });
+            const response = await api.post('/classes', { name: className.trim() }); // trim input before sending
             setClassName('');
             if (onClassAdded) {
                 onClassAdded(response.data);
             }
-            setSuccess('Class created successfully!');
-            setClassName('');
+            notifySuccess("Class created successfully");
         } catch (err) {
-            setError('Failed to add class');
+            notifyError(getErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -33,12 +30,9 @@ const AddClassForm = ({ onClassAdded }) => {
 
     return (
         <div className={styles.formCard}>
-            {error && <Alert type="error" message={error} />}
-            {success && <Alert type="success" message={success} />}
-            
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>
+                    <label className={styles.label}>
                         Class Name:
                     <input 
                         type="text"
@@ -52,8 +46,8 @@ const AddClassForm = ({ onClassAdded }) => {
                 </div>
             
                 <div style={{ marginTop: '10px' }}>
-                    <button type="submit" className={`${styles.submitButton} ${loading ? styles.loading : ''}`} disabled={loading}>
-                        {loading ? 'Adding...' : 'Add Class'}
+                    <button type="submit" className={`${styles.submitButton} ${loading ? styles.loading : ''}`} disabled={loading || !className.trim()}>
+                        {loading ? 'Creating...' : 'Create Class'}
                     </button>
                 </div>
             </form>
