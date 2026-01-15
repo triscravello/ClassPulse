@@ -11,27 +11,23 @@ import ReportsPage from "./pages/Reports";
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Navigate to="/login" />} />
+    {/* Default redirect */}
+    <Route path="/" element={<Navigate to="/login" replace />} />
 
     {/* Public routes */}
     <Route path="/login" element={<LoginForm />} />
     <Route path="/signup" element={<SignupForm />} />
 
-    {/* Protected routes */}
-    <Route
-      element={
-        <PrivateRoute>
-          <MainLayout />
-        </PrivateRoute>
-      }
-    >
+    {/* Protected routes with layout */}
+    <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/classes/:id" element={<ClassroomPage />} />
-      <Route path="classes/:classId/students/:studentId" element={<StudentView />} />
+      <Route path="/classes/:classId/students/:studentId" element={<StudentView />} />
       <Route path="/reports" element={<ReportsPage />} />
       <Route path="/reports/class/:classId" element={<ReportsPage />} />
     </Route>
 
+    {/* Catch-all */}
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
