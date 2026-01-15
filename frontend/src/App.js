@@ -4,6 +4,7 @@ import SideBar from './components/layout/Sidebar';
 import Footer from './components/layout/Footer';
 import AppRoutes from './AppRoutes';
 import './App.css';
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <div className='content'>
         <NavBar />
         <main>
+          <Toaster position='top-right' toastOptions={{ maxVisible: 3 }} />
           <AppRoutes />
         </main>
         <Footer />
