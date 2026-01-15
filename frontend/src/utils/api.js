@@ -54,4 +54,20 @@ api.interceptors.response.use(
     } 
 );
 
+// Centralize error translation
+export const getErrorMessage = (error) => {
+    if (!error.response) {
+        return "Network error. Please check your connection.";
+    }
+
+    const status = error.response.status;
+
+    if (status === 400) return "Please check your input.";
+    if (status === 401) return "Your session expired. Please log in again.";
+    if (status === 403) return "You don't have permission to do that.";
+    if (status === 404) return "Requested resource not found.";
+
+    return "Something went wrong. Please try again.";
+};
+
 export default api;
