@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #f8fafc; /* light background for main area */
+  background-color: #f8fafc;
 }
 
 .content {
@@ -15,30 +15,25 @@
 main {
   flex: 1;
   padding: 1rem;
-  overflow-y: auto;
+  overflow-y: auto; /* scrollable content */
   background-color: #f1f5f9;
-
-  /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 116, 139, 0.5) transparent;
 }
 
-/* Scroll bar styling for better UX */
 main::-webkit-scrollbar {
   width: 8px;
 }
-
 main::-webkit-scrollbar-thumb {
   background-color: rgba(100, 116, 139, 0.5);
   border-radius: 4px;
 }
-
 main::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* Ensure toast is always visible above layout */
+.react-hot-toast {
+  z-index: 99999 !important;
+  pointer-events: auto;
 }

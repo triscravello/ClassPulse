@@ -1,22 +1,26 @@
-// src/App.js
+import { useContext } from "react";
 import NavBar from './components/layout/NavBar';
 import SideBar from './components/layout/Sidebar';
 import Footer from './components/layout/Footer';
 import AppRoutes from './AppRoutes';
 import './App.css';
-import { Toaster } from "react-hot-toast";
+import { UserContext } from "./context/UserContext";
 
 function App() {
+  const { user } = useContext(UserContext);
+
+  const showLayout = !!user; // Only show sidebar/navbar/footer if logged in
+
   return (
     <div className='app-container'>
-      <SideBar collapsed={true} />
+      {showLayout && <SideBar collapsed={true} />}
+
       <div className='content'>
-        <NavBar />
+        {showLayout && <NavBar />}
         <main>
-          <Toaster position='top-right' toastOptions={{ maxVisible: 3 }} />
           <AppRoutes />
         </main>
-        <Footer />
+        {showLayout && <Footer />}
       </div>
     </div>
   );
