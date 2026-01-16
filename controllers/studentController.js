@@ -13,7 +13,7 @@ const asyncHandler = fn => (req, res, next) =>
 const getAllStudents = asyncHandler(async (req, res) => {
     const { classId } = req.params;
     const students = await studentService.getAllStudents(classId, req.user.id);
-    res.status(200).json(students);
+    res.status(200).json({ students });
 });
 
 /**

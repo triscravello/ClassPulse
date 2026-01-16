@@ -29,12 +29,12 @@ const getAllStudents = async (classId, userId) => {
  * @param {String} userId
  */
 const createStudent = async (classId, studentData, userId) => {
-    await authorizeClassAccess(classId, userId);
+    const foundClass = await authorizeClassAccess(classId, userId);
     const { first_name, last_name } = studentData;
 
     if (!first_name) throw { status: 400, message: "Invalid data." };
 
-    const newStudent = await Student.create({ ...studentData, class: classId });
+    const newStudent = await Student.create({ ...studentData, class: classId, teacher: userId });
     return newStudent
 };
 
