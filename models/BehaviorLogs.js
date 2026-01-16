@@ -20,7 +20,7 @@ const behaviorLogSchema = new mongoose.Schema(
         },
 
         // "Participation", "On Task", "Disruption", "Tardy"
-        category: { type: String, enum: ["Participation", "On Task", "Disruption", "Tardy"], required: true },
+        category: { type: String, enum: ["Positive", "Negative", "Participation", "On Task", "Disruption", "Tardy"], required: true },
 
         // +1, -1, scoring 
         value: { type: Number, min: -10, max: 10, required: true, },
