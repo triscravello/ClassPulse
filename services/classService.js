@@ -1,13 +1,22 @@
-// /services/classService.js
-
 const Class = require('../models/Class');
 
 /**
- * Get all classes for a specific teacher
+ * Get all classes for a specific teacher, including student counts
  * @param {String} teacherId
  */
 const getAllClasses = async (teacherId) => {
-  return await Class.find({ teacher: teacherId }).lean();
+  if (!teacherId) throw new Error('Teacher ID is required.');
+
+  try {
+    // .lean({ virtuals: true }) includes virtuals like studentCount
+    const classes = await Class.find({ teacher: teacherId })
+      .lean({ virtuals: true });
+
+    return classes;
+  } catch (err) {
+    console.error('Error fetching classes:', err);
+    throw new Error('Failed to fetch classes.');
+  }
 };
 
 /**
@@ -29,12 +38,12 @@ const createClass = async (data, teacherId) => {
 };
 
 /**
- * Get a class by ID with ownership check
+ * Get a class by ID with ownership check, including studentCount
  * @param {String} classId
  * @param {String} teacherId
  */
 const getClassById = async (classId, teacherId) => {
-  const foundClass = await Class.findById(classId);
+  const foundClass = await Class.findById(classId).lean({ virtuals: true });
   if (!foundClass) throw new Error('Class not found.');
   if (foundClass.teacher.toString() !== teacherId) throw new Error('Not authorized.');
 
@@ -52,13 +61,8 @@ const updateClass = async (classId, data, teacherId) => {
   if (!foundClass) throw new Error('Class not found.');
   if (foundClass.teacher.toString() !== teacherId) throw new Error('Not authorized.');
 
-  if (data.name !== undefined) {
-    foundClass.name = data.name;
-  }
-
-  if (data.subject !== undefined) {
-    foundClass.subject = data.subject;
-  }
+  if (data.name !== undefined) foundClass.name = data.name;
+  if (data.subject !== undefined) foundClass.subject = data.subject;
 
   return await foundClass.save();
 };

@@ -17,31 +17,35 @@ const Dashboard = () => {
   const [editingClass, setEditingClass] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch classes and student counts
+  // Fetch classes + student counts
   useEffect(() => {
     const fetchClasses = async () => {
       try {
         const res = await api.get('/classes');
+        console.log('📦 Raw classes:', res.data);
+
         const classesData = Array.isArray(res.data) ? res.data : [];
 
         const classesWithCounts = await Promise.all(
           classesData.map(async (cls) => {
-            if (!cls?._id) return null;
             try {
               const studentsRes = await api.get(`/classes/${cls._id}/students`);
-              return {
-                ...cls,
-                studentCount: Array.isArray(studentsRes.data)
-                  ? studentsRes.data.length
-                  : 0,
-              };
-            } catch {
+              const count = Array.isArray(studentsRes.data)
+                ? studentsRes.data.length
+                : 0;
+
+              console.log(`👥 ${cls.name}: ${count} students`);
+
+              return { ...cls, studentCount: count };
+            } catch (err) {
+              console.error(`❌ Student fetch failed for ${cls.name}`, err);
               return { ...cls, studentCount: 0 };
             }
           })
         );
 
-        setClasses(classesWithCounts.filter(Boolean));
+        console.log('✅ Final class data:', classesWithCounts);
+        setClasses(classesWithCounts);
       } catch (err) {
         console.error(err);
         setError('Failed to fetch classes.');
@@ -55,26 +59,35 @@ const Dashboard = () => {
 
   if (!user) return <p>Loading user...</p>;
 
-  const handleViewClass = (classInfo) => navigate(`/classes/${classInfo._id}`); 
-  const handleViewReports = (classInfo) => navigate(`/reports/class/${classInfo._id}`);
+  const handleViewClass = (classInfo) =>
+    navigate(`/classes/${classInfo._id}`);
+
+  const handleViewReports = (classInfo) =>
+    navigate(`/reports/class/${classInfo._id}`);
 
   const handleUpdatedClass = (updated) => {
     if (!updated?._id) return;
+
     setClasses((prev) =>
-      prev.map((cls) => (cls._id === updated._id ? updated : cls))
+      prev.map((cls) =>
+        cls._id === updated._id
+          ? { ...cls, ...updated }
+          : cls
+      )
     );
+
     setEditingClass(null);
   };
 
   const handleDeleteClass = async (classId) => {
-    if (!classId || !window.confirm('Are you sure you want to delete this class?'))
-      return;
+    if (!classId || !window.confirm('Delete this class?')) return;
+
     try {
       await api.delete(`/classes/${classId}`);
       setClasses((prev) => prev.filter((cls) => cls._id !== classId));
     } catch (err) {
       console.error(err);
-      setError('Failed to delete class. Please try again.');
+      setError('Failed to delete class.');
     }
   };
 
@@ -91,42 +104,39 @@ const Dashboard = () => {
         </button>
       </div>
 
-      {/* Alerts & Loading */}
       {loading && <LoadingSpinner />}
       {error && <Alert type="error" message={error} />}
 
-      {/* Classes Section */}
+      {/* Classes */}
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className="text-xl font-semibold">Your Classes</h2>
         </div>
         <div className={styles.sectionDivider} />
 
-        {classes.length > 0 ? (
+        {classes.length ? (
           <div className={styles.widgetGrid}>
-            {classes.map((classInfo, idx) =>
-              classInfo?._id ? (
-                <div
-                  key={classInfo._id}
-                  className={`${styles.widget} ${styles[`widgetDelay${(idx % 3) + 1}`]}`}
-                >
-                  <ClassCard
-                    classInfo={classInfo}
-                    onView={handleViewClass}
-                    onReports={handleViewReports}
-                    onEdit={(cls) => setEditingClass(cls)}
-                    onDelete={handleDeleteClass}
-                  />
-                </div>
-              ) : null
-            )}
+            {classes.map((cls, idx) => (
+              <div
+                key={cls._id}
+                className={`${styles.widget} ${styles[`widgetDelay${(idx % 3) + 1}`]}`}
+              >
+                <ClassCard
+                  classInfo={cls}
+                  onView={handleViewClass}
+                  onReports={handleViewReports}
+                  onEdit={setEditingClass}
+                  onDelete={handleDeleteClass}
+                />
+              </div>
+            ))}
           </div>
         ) : (
-          <p>No classes available. Add a new class to get started!</p>
+          <p>No classes yet. Add one below!</p>
         )}
       </div>
 
-      {/* Add New Class Section */}
+      {/* Add Class */}
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className="text-xl font-semibold">Add New Class</h2>
@@ -135,22 +145,16 @@ const Dashboard = () => {
 
         <AddClassForm
           onClassAdded={(newClass) => {
-            if (!newClass?._id) return;
             setClasses((prev) => [
-              ...(prev || []),
-              {
-                _id: newClass._id,
-                name: newClass.name ?? 'Unnamed Class',
-                studentCount: 0,
-                ...newClass,
-              },
+              ...prev,
+              { ...newClass, studentCount: 0 },
             ]);
           }}
         />
       </div>
 
-      {/* Edit Class Modal */}
-      {editingClass?._id && (
+      {/* Edit Modal */}
+      {editingClass && (
         <EditClassModal
           classInfo={editingClass}
           onClose={() => setEditingClass(null)}
