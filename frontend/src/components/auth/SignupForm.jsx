@@ -1,35 +1,56 @@
 import { useState, useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
-import api from '../../utils/api'; 
-import styles from './SignupForm.module.css';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import api from '../../utils/api';
+import styles from './SignupForm.module.css';
 import { notifySuccess, notifyError } from '../../utils/notify';
 import { getErrorMessage } from '../../utils/api';
 
 const SignupForm = () => {
   const { login } = useContext(UserContext);
   const navigate = useNavigate();
-  
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fieldError, setFieldError] = useState({ name: '', email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Password strength calculation
+  // --- Password Strength Calculation ---
   const getPasswordStrength = () => {
-    if (password.length < 8) return 'weak';
-    if (password.length < 12) return 'medium';
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[\W]/.test(password)) score++;
+    if (score <= 1) return 'weak';
+    if (score <= 3) return 'medium';
     return 'strong';
-  }
+  };
 
   const strength = getPasswordStrength();
   const strengthWidth = { weak: '33%', medium: '66%', strong: '100%' }[strength];
 
-  // Submit handler
+  // --- Submit Handler ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFieldError({ name: '', email: '', password: '' });
+
+    // Frontend validation
+    if (name.trim().length < 2) {
+      setFieldError(prev => ({ ...prev, name: 'Name must be at least 2 characters.' }));
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setFieldError(prev => ({ ...prev, email: 'Invalid email address.' }));
+      return;
+    }
+    if (password.length < 8) {
+      setFieldError(prev => ({ ...prev, password: 'Password must be at least 8 characters.' }));
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -42,13 +63,12 @@ const SignupForm = () => {
     } catch (err) {
       const msg = getErrorMessage(err);
 
-      // Map backend errors to fields
       if (msg.toLowerCase().includes('email')) {
         setFieldError(prev => ({ ...prev, email: msg }));
       } else if (msg.toLowerCase().includes('password')) {
         setFieldError(prev => ({ ...prev, password: msg }));
       } else {
-        notifyError(msg);
+        notifyError(msg || "Something went wrong.");
       }
     } finally {
       setIsSubmitting(false);
@@ -57,6 +77,8 @@ const SignupForm = () => {
 
   const inputClasses = (hasError) =>
     `border p-2 rounded-full w-full ${styles.input} ${hasError ? styles.inputError : ''}`;
+
+  const hasError = (field) => !!fieldError[field];
 
   return (
     <div className={`bg-white p-6 rounded-xl shadow ${styles.card}`}>
@@ -70,11 +92,11 @@ const SignupForm = () => {
           value={name}
           onChange={e => setName(e.target.value)}
           required
-          className={inputClasses(!!fieldError.name)}
-          aria-invalid={!!fieldError.name}
-          aria-describedby={fieldError.name ? "name-error" : undefined}
+          className={inputClasses(hasError('name'))}
+          aria-invalid={hasError('name')}
+          aria-describedby={hasError('name') ? "name-error" : undefined}
         />
-        {fieldError.name && <p id="name-error" className={styles.fieldError}>{fieldError.name}</p>}
+        {hasError('name') && <p id="name-error" className={styles.fieldError}>{fieldError.name}</p>}
 
         {/* Email */}
         <label className="sr-only" htmlFor="email">Email</label>
@@ -85,37 +107,55 @@ const SignupForm = () => {
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
-          className={inputClasses(!!fieldError.email)}
-          aria-invalid={!!fieldError.email}
-          aria-describedby={fieldError.email ? "email-error" : undefined}
+          className={inputClasses(hasError('email'))}
+          aria-invalid={hasError('email')}
+          aria-describedby={hasError('email') ? "email-error" : undefined}
         />
-        {fieldError.email && <p id="email-error" className={styles.fieldError}>{fieldError.email}</p>}
+        {hasError('email') && <p id="email-error" className={styles.fieldError}>{fieldError.email}</p>}
 
         {/* Password */}
-        <label className="sr-only" htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          className={inputClasses(!!fieldError.password)}
-          aria-invalid={!!fieldError.password}
-          aria-describedby={fieldError.password ? "password-error" : undefined}
-        />
-        {fieldError.password && <p id="password-error" className={styles.fieldError}>{fieldError.password}</p>}
+        <div className="relative">
+          <label className="sr-only" htmlFor="password">Password</label>
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            className={inputClasses(hasError('password'))}
+            aria-invalid={hasError('password')}
+            aria-describedby={hasError('password') ? "password-error" : undefined}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(prev => !prev)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
+        {hasError('password') && <p id="password-error" className={styles.fieldError}>{fieldError.password}</p>}
 
+        {/* Password Helper */}
         <p className={styles.helperText}>Password must be at least 8 characters</p>
 
         {/* Password Strength */}
-        <div className="mt-2 bg-gray-200 rounded h-2">
+        <div className="mt-2 bg-gray-200 rounded-full h-2">
           <div
             className={`${styles.passwordStrength} ${styles[strength]}`}
             style={{ width: strengthWidth, height: '100%' }}
           />
         </div>
-        <p className="text-sm text-gray-600">{strength.toUpperCase()}</p>
+        <p className={`text-sm mt-1 ${strength === 'weak' ? 'text-red-500' : strength === 'medium' ? 'text-yellow-500' : 'text-green-500'}`}>
+          {strength.toUpperCase()}
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+          {strength === 'weak' && 'Try adding numbers, uppercase letters, or symbols.'}
+          {strength === 'medium' && 'Good, but consider adding symbols.'}
+          {strength === 'strong' && 'Strong password!'}
+        </p>
 
         {/* Submit Button */}
         <button

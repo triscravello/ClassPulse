@@ -52,8 +52,8 @@
 
 .passwordStrength {
     height: 6px;
-    border-radius: 4px;
-    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 9999px; /* fully rounded like inputs */
+    transition: width 0.3s ease-in-out, background-color 0.3s ease;
 }
 
 .weak {
