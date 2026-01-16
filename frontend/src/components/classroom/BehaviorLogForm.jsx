@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '../../utils/api';
 import Modal from '../common/Modal';
 import styles from './BehaviorLogForm.module.css';
+import { notifySuccess, notifyError } from '../../utils/notify';
 
 const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
     const [category, setCategory] = useState('');
@@ -26,9 +27,11 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
             setModalMessage('Behavior log added successfully!');
             setShowModal(true);
             if (onLogAdded) onLogAdded(response.data); // populated log returned
+            notifySuccess("Behavior logged");
         } catch (err) {
             setModalMessage('Failed to save log.');
             setShowModal(true);
+            notifyError("Couldn't log behavior. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -42,7 +45,7 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <input
                         className={styles.input}
-                        placeholder="Category (Positive, Negative, etc.)"
+                        placeholder="Category (Participation, On Task, Disruption, Tardy, etc.)"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         required
