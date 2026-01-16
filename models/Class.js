@@ -21,7 +21,8 @@ classSchema.index({ name: 1, teacher: 1}, { unique: true }); // Prevent duplicat
 classSchema.virtual('students', {
     ref: 'Student',
     localField: '_id',
-    foreignField: 'class'
+    foreignField: 'class', 
+    count: true, // return number of students instead of array 
 });
 
 module.exports = mongoose.model("Class", classSchema);
