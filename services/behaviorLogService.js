@@ -1,3 +1,4 @@
+const { number } = require("joi");
 const BehaviorLog = require("../models/BehaviorLogs");
 const Student = require("../models/Students");
 const User = require("../models/User");
@@ -62,32 +63,53 @@ const getBehaviorLogsByClass = async (classId, options = {}) => {
  * logData: { category, comment, value, teacherId }
  */
 const createBehaviorLog = async (studentId, logData) => {
+    // Validate studentId
     if (!mongoose.Types.ObjectId.isValid(studentId)) {
         throw new Error("Invalid student ID");
     }
 
     const student = await Student.findById(studentId);
     if (!student) throw new Error("Student not found");
+    if (!student.class) throw new Error("Student is not assigned to a class");
 
-    const { category, comment = "", value = 0, teacherId } = logData;
+    let { category, comment = "", value = 0, teacherId } = logData;
 
-    if (!category) throw new Error("Category is required");
-    if (typeof value !== "number" || value < -10 || value > 10) {
+    // Normalize category: capitalize first letter
+    category = category.trim();
+    category = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+
+    const allowedCategories = ["Positive", "Negative", "Participation", "On Task", "Disruption", "Tardy"];
+    if (!allowedCategories.includes(category)) {
+        throw new Error("Invalid category");
+    }
+
+    // Ensure value is numeric and within bounds
+    const numericValue = Number(value);
+    if (isNaN(numericValue) || numericValue < -10 || numericValue > 10) {
         throw new Error("Value must be a number between -10 and 10");
     }
+
     if (!teacherId || !mongoose.Types.ObjectId.isValid(teacherId)) {
         throw new Error("Invalid teacher ID");
     }
-    if (!student.class) throw new Error("Student is not assigned to a class");
 
     try {
+        console.log("Creating behavior log:", {
+            student: studentId,
+            teacher: teacherId,
+            class: student.class,
+            category,
+            comment,
+            value: numericValue,
+        });
+
         const log = await BehaviorLog.create({
             student: studentId,
             teacher: teacherId,
             class: student.class,
             category,
             comment,
-            value,
+            value: numericValue,
         });
 
         return await BehaviorLog.findById(log._id)
@@ -95,7 +117,7 @@ const createBehaviorLog = async (studentId, logData) => {
             .populate("teacher", "name");
     } catch (err) {
         console.error("Error creating behavior log:", err);
-        throw new Error("Failed to create behavior log");
+        throw new Error("Failed to create behavior log: " + err.message);
     }
 };
 
