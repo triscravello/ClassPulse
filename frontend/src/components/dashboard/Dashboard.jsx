@@ -55,9 +55,8 @@ const Dashboard = () => {
 
   if (!user) return <p>Loading user...</p>;
 
-  const handleViewClass = (classInfo) => navigate(`/classes/${classInfo._id}`);
-  const handleViewReports = (classInfo) =>
-    navigate(`/reports/class/${classInfo._id}`);
+  const handleViewClass = (classInfo) => navigate(`/classes/${classInfo._id}`); 
+  const handleViewReports = (classInfo) => navigate(`/reports/class/${classInfo._id}`);
 
   const handleUpdatedClass = (updated) => {
     if (!updated?._id) return;
@@ -75,7 +74,7 @@ const Dashboard = () => {
       setClasses((prev) => prev.filter((cls) => cls._id !== classId));
     } catch (err) {
       console.error(err);
-      alert('Failed to delete class. Please try again.');
+      setError('Failed to delete class. Please try again.');
     }
   };
 
