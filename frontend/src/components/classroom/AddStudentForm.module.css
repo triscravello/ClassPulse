@@ -36,10 +36,17 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }
 
+.input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 /* Error */
 .error {
     color: #ef4444;
     font-size: 0.875rem;
+    min-height: 1.1em;
 }
 
 /* Button */
@@ -76,5 +83,15 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form {
+    animation: none;
+  }
+
+  .button {
+    animation: none;
   }
 }

@@ -2,41 +2,56 @@
 import { useState } from 'react';
 import api from '../../utils/api';
 import styles from './AddStudentForm.module.css';
+import { notifySuccess, notifyError } from '../../utils/notify';
+import { getErrorMessage } from '../../utils/api';
 
 const AddStudentForm = ({ classId, onStudentAdded }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState({});
+
+    const validate = () => {
+        const newError = {};
+        
+        if (!firstName.trim()) {
+            newError.firstName = 'First name is required';
+        }
+
+        setError(newError);
+        return Object.keys(newError).length === 0;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        setError(null);
 
+        // Validation - inline only
+        if (!validate()) return;
+
+        setLoading(true);
+        
         try {
             const response = await api.post(`/classes/${classId}/students`, {
-                first_name: firstName,
-                last_name: lastName
+                first_name: firstName.trim(),
+                last_name: lastName.trim()
             });
 
             const student = response.data.student;
 
-            if (!student || !student._id) {
-                console.error("Backend did not return student._id:", student);
-                setError("Unexpected server response.");
-                return;
+            if (!student._id) {
+                throw new Error('Invalid server response');
             }
 
             onStudentAdded(student);
 
+            notifySuccess('Student added successfully'); // success -> toast
+
             // Clear form
             setFirstName('');
             setLastName('');
-
+            setError({});
         } catch (err) {
-            console.error(err);
-            setError(err.response?.data?.error || "Failed to add student.");
+            notifyError(getErrorMessage(err)); // server -> toast
         } finally {
             setLoading(false);
         }
@@ -51,8 +66,11 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="border p-2 w-full rounded"
+                    className={styles.input}
                 />
+                {error.firstName && (
+                    <p className={styles.error}>{error.firstName}</p>
+                )}
             </div>
 
             <div className={styles.field}>
@@ -61,11 +79,9 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="border p-2 w-full rounded"
+                    className={styles.input}
                 />
             </div>
-
-            {error && <p className={styles.error}>{error}</p>}
 
             <button
                 type="submit"
