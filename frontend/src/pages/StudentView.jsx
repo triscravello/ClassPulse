@@ -7,6 +7,7 @@ import BehaviorLogForm from "../components/classroom/BehaviorLogForm";
 import QuickActionButtons from "../components/classroom/QuickActionButtons";
 import StudentReportSummary from "../components/reports/StudentReportSummary";
 import styles from './StudentView.module.css';
+import { toast } from 'react-hot-toast';
 
 const StudentView = () => {
     const { classId, studentId } = useParams();
@@ -52,8 +53,13 @@ const StudentView = () => {
         try {
             await api.delete(`/behaviorlogs/${logId}`);
             setLogs(logs.filter(l => l._id !== logId));
+            if (!window.confirm("Delete this behavior log? This cannot be undone.")) return;
+            toast.success("Behavior log deleted");
         } catch (err) {
             console.error("Error deleting log:", err);
+            toast.error(
+                err.response?.data?.message || "Failed to delete behavior log. Please try again."
+            );
         }
     };
 
@@ -88,7 +94,13 @@ const StudentView = () => {
                 <QuickActionButtons
                     studentId={studentId}
                     logs={logs}
-                    onLogAdded={(log) => setLogs(prev => [log, ...prev])}
+                    onLogAdded={(log) => {
+                        setLogs(prev => [log, ...prev]);
+                        toast.success("Behavior log added");
+                    }}
+                    onLogError={(message) => {
+                        toast.error(message || "Failed to log behavior. Please try again.");
+                    }}
                     onLogDeleted={(logId) => setLogs(prev => prev.filter(l => l._id !== logId))}
                 />
             </div>
@@ -138,6 +150,7 @@ const StudentView = () => {
                     onLogAdded={(newLog) => {
                         setLogs(prev => [newLog, ...prev]);
                         setShowLogForm(false);
+                        toast.success("Behavior log added.");
                     }}
                     onClose={() => setShowLogForm(false)}
                 />
