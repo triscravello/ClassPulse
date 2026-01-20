@@ -3,9 +3,8 @@ import api from "../../utils/api"; // axios instance
 import Modal from "../common/Modal";
 import styles from "./QuickActionButtons.module.css";
 import { UserContext } from "../../context/UserContext";
-import { toast } from "react-toastify"; 
 
-const QuickActionButtons = ({ studentId, onLogAdded }) => {
+const QuickActionButtons = ({ studentId, onLogAdded, onLogError }) => {
   const { user } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -43,13 +42,14 @@ const QuickActionButtons = ({ studentId, onLogAdded }) => {
       });
 
       console.log("Behavior log created:", response.data);
-      toast.success("Behavior log added!");
-
-      if (onLogAdded) onLogAdded(response.data);
+      onLogAdded?.(response.data);
 
     } catch (err) {
       console.error("Error creating behavior log:", err);
-      toast.error("Failed to create behavior log.");
+      onLogError?.(
+        err.response?.data?.message ||
+        "Failed to log behavior. Please try again."
+      );
     } finally {
       setLoading(false);
     }
