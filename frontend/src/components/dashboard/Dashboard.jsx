@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { UserContext } from '../../context/UserContext';
 import api from '../../utils/api';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -15,15 +16,21 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingClass, setEditingClass] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
   const navigate = useNavigate();
+
+  // Update page title dynamically
+  useEffect(() => {
+    document.title = 'Dashboard - ClassPulse';
+  }, []);
 
   // Fetch classes + student counts
   useEffect(() => {
+    let cancelled = false;
+
     const fetchClasses = async () => {
       try {
         const res = await api.get('/classes');
-        console.log('📦 Raw classes:', res.data);
-
         const classesData = Array.isArray(res.data) ? res.data : [];
 
         const classesWithCounts = await Promise.all(
@@ -34,8 +41,6 @@ const Dashboard = () => {
                 ? studentsRes.data.length
                 : 0;
 
-              console.log(`👥 ${cls.name}: ${count} students`);
-
               return { ...cls, studentCount: count };
             } catch (err) {
               console.error(`❌ Student fetch failed for ${cls.name}`, err);
@@ -43,18 +48,18 @@ const Dashboard = () => {
             }
           })
         );
-
-        console.log('✅ Final class data:', classesWithCounts);
-        setClasses(classesWithCounts);
+        
+        if (!cancelled) setClasses(classesWithCounts);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch classes.');
+        if (!cancelled) setError('Failed to fetch classes.');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchClasses();
+    return () => { cancelled = true; };
   }, []);
 
   if (!user) return <p>Loading user...</p>;
@@ -77,17 +82,22 @@ const Dashboard = () => {
     );
 
     setEditingClass(null);
+    toast.success(`Class "${updated.name}" updated successfully!`)
   };
 
   const handleDeleteClass = async (classId) => {
     if (!classId || !window.confirm('Delete this class?')) return;
 
+    setDeletingId(classId);
     try {
       await api.delete(`/classes/${classId}`);
       setClasses((prev) => prev.filter((cls) => cls._id !== classId));
+      toast.success('Class deleted successfully.')
     } catch (err) {
       console.error(err);
-      setError('Failed to delete class.');
+      toast.error('Failed to delete class. Please try again.')
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -127,6 +137,7 @@ const Dashboard = () => {
                   onReports={handleViewReports}
                   onEdit={setEditingClass}
                   onDelete={handleDeleteClass}
+                  deleting={deletingId === cls._id}
                 />
               </div>
             ))}
@@ -149,6 +160,7 @@ const Dashboard = () => {
               ...prev,
               { ...newClass, studentCount: 0 },
             ]);
+            toast.success(`Class "${newClass.name}" added successfully!`);
           }}
         />
       </div>
