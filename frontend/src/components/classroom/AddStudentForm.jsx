@@ -24,6 +24,7 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (loading) return; // prevent double submission 
 
         // Validation - inline only
         if (!validate()) return;
