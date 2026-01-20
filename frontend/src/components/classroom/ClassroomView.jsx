@@ -14,31 +14,37 @@ import styles from './ClassroomView.module.css';
 const ClassroomView = () => {
   const { id } = useParams(); // classId
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
   const [classData, setClassData] = useState(null);
   const [students, setStudents] = useState([]);
   const [highlightedId, setHighlightedId] = useState(null);
   const [loggingStudentId, setLoggingStudentId] = useState(null);
+
   const [classLogs, setClassLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deletingLogIds, setDeletingLogIds] = useState([]);
-  const navigate = useNavigate();
 
   /** Fetch classroom + students */
   const fetchClassroom = useCallback(async () => {
+    let cancelled = false;
     setLoading(true);
     setError(null);
+
     try {
       const [classRes, studentRes] = await Promise.all([
         api.get(`/classes/${id}`),
         api.get(`/classes/${id}/students`)
       ]);
 
+      if (cancelled) return;
+
       setClassData(classRes.data);
 
-      // Support both array responses and wrapped { students: [...] }
       const fetchedStudents = Array.isArray(studentRes.data?.students)
         ? studentRes.data.students
         : Array.isArray(studentRes.data)
@@ -54,8 +60,12 @@ const ClassroomView = () => {
       console.error(err);
       setError('Failed to load classroom.');
     } finally {
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     }
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   useEffect(() => {
@@ -64,22 +74,33 @@ const ClassroomView = () => {
 
   /** Fetch class behavior logs */
   const fetchClassLogs = useCallback(async () => {
+    let cancelled = false;
     setLogsLoading(true);
     setLogsError(null);
+
     try {
       const res = await api.get(`/behaviorlogs/class/${id}`);
-      setClassLogs(res.data || []);
+      if (!cancelled) setClassLogs(res.data || []);
     } catch (err) {
       console.error('Failed to load class behavior logs:', err);
-      setLogsError('Failed to load class behavior logs.');
+      if (!cancelled) setLogsError('Failed to load class behavior logs.');
     } finally {
-      setLogsLoading(false);
+      if (!cancelled) setLogsLoading(false);
     }
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   useEffect(() => {
     fetchClassLogs();
   }, [fetchClassLogs]);
+
+  /** Dynamic page title */
+  useEffect(() => {
+    document.title = `${classData?.name || 'Classroom'} – ClassPulse`;
+  }, [classData]);
 
   if (loading) return <LoadingSpinner />;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -92,10 +113,11 @@ const ClassroomView = () => {
   /** Delete student */
   const handleDeleteStudent = async (studentId) => {
     if (!window.confirm('Are you sure you want to delete this student?')) return;
+
     try {
       await api.delete(`/classes/${id}/students/${studentId}`);
       setStudents(prev => prev.filter(s => s._id !== studentId));
-      notifySuccess('Student deleted.');
+      notifySuccess('Student deleted successfully.');
     } catch (err) {
       console.error('Failed to delete student:', err);
       notifyError('Failed to delete student.');
@@ -105,11 +127,12 @@ const ClassroomView = () => {
   /** Delete behavior log */
   const handleDeleteLog = async (logId) => {
     if (!window.confirm('Are you sure you want to delete this behavior log?')) return;
+
     try {
       setDeletingLogIds(prev => [...prev, logId]);
       await api.delete(`/behaviorlogs/${logId}`);
       setClassLogs(prev => prev.filter(log => log._id !== logId));
-      notifySuccess('Behavior log deleted.');
+      notifySuccess('Behavior log deleted successfully.');
     } catch (err) {
       console.error('Failed to delete behavior log:', err);
       notifyError('Failed to delete behavior log.');
@@ -125,10 +148,19 @@ const ClassroomView = () => {
 
   return (
     <div className={styles.page}>
+      {/* Breadcrumbs */}
+      <div className="text-sm text-gray-600 mb-2">
+        <button onClick={() => navigate('/dashboard')} className="underline">
+          Dashboard
+        </button>{' '}
+        &gt; <span>{classData?.name || 'Classroom'}</span>
+      </div>
+
+      {/* Header Actions */}
       <div className={styles.headerActions}>
         <button
           onClick={() => navigate('/dashboard')}
-          className="mb-4 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
         >
           Back to Dashboard
         </button>
@@ -145,7 +177,7 @@ const ClassroomView = () => {
         Teacher: {classData?.teacher?.name || user?.name || 'Unknown'}
       </p>
 
-      {/* Students Section */}
+      {/* Students */}
       <h2 className="text-xl font-semibold mb-2">Students</h2>
       {students.length === 0 ? (
         <p>No students in this class yet.</p>
@@ -155,7 +187,9 @@ const ClassroomView = () => {
             <div
               key={student._id}
               className={`${styles.studentTitle} ${
-                highlightedId === student._id ? 'border-2 border-green-400 p-1 rounded' : ''
+                highlightedId === student._id
+                  ? 'border-2 border-green-400 p-1 rounded'
+                  : ''
               }`}
             >
               <StudentCard
@@ -166,6 +200,7 @@ const ClassroomView = () => {
               />
               <QuickActionButtons
                 studentId={student._id}
+                disabled={loggingStudentId === student._id}
                 onLogAdded={(log) => {
                   if (log && log._id) setClassLogs(prev => [log, ...prev]);
                 }}
@@ -175,7 +210,7 @@ const ClassroomView = () => {
         </div>
       )}
 
-      {/* Behavior Log Form */}
+      {/* Quick Log Modal */}
       {loggingStudentId && (
         <BehaviorLogForm
           studentId={loggingStudentId}
@@ -187,9 +222,10 @@ const ClassroomView = () => {
         />
       )}
 
-      {/* Class Behavior Logs */}
+      {/* Class Logs */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Class Behavior Logs</h2>
+
         {logsLoading ? (
           <LoadingSpinner />
         ) : logsError ? (
@@ -203,12 +239,18 @@ const ClassroomView = () => {
                 <div>
                   <p>
                     <strong>Student:</strong>{' '}
-                    {log.student ? `${log.student.first_name} ${log.student.last_name}` : 'Unknown Student'}
+                    {log.student
+                      ? `${log.student.first_name} ${log.student.last_name}`
+                      : 'Unknown Student'}
                   </p>
                   <p><strong>Type:</strong> {log.type}</p>
                   {log.comment && <p><strong>Note:</strong> {log.comment}</p>}
-                  {log.value !== undefined && <p><strong>Points:</strong> {log.value}</p>}
-                  <p className="text-gray-500 text-sm">{new Date(log.createdAt).toLocaleString()}</p>
+                  {log.value !== undefined && (
+                    <p><strong>Points:</strong> {log.value}</p>
+                  )}
+                  <p className="text-gray-500 text-sm">
+                    {new Date(log.createdAt).toLocaleString()}
+                  </p>
                 </div>
                 <button
                   onClick={() => handleDeleteLog(log._id)}
@@ -227,22 +269,24 @@ const ClassroomView = () => {
         )}
       </div>
 
-      {/* Add New Student */}
+      {/* Add Student */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Add New Student</h2>
         <AddStudentForm
           classId={id}
           onStudentAdded={(newStudent) => {
-            if (newStudent && newStudent._id) {
-              setStudents(prev => {
-                const updated = [...prev, newStudent].sort((a, b) => a.first_name.localeCompare(b.first_name));
-                return updated;
-              });
-              // Highlight newly added student briefly
-              setHighlightedId(newStudent._id);
-              setTimeout(() => setHighlightedId(null), 2000);
-              notifySuccess('Student added successfully!');
-            }
+            if (!newStudent?._id) return;
+
+            setStudents(prev =>
+              [...prev, newStudent].sort((a, b) =>
+                a.first_name.localeCompare(b.first_name)
+              )
+            );
+
+            setHighlightedId(newStudent._id);
+            setTimeout(() => setHighlightedId(null), 2000);
+
+            notifySuccess('Student added successfully!');
           }}
         />
       </div>
