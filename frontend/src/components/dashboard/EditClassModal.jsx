@@ -1,12 +1,15 @@
 // src/components/dashboard/EditClassModal.jsx
 import { useState } from "react";
-import api from "../../utils/api";
+import api, { getErrorMessage } from "../../utils/api";
+import { notifyError } from "../../utils/notify";
 
 const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
     const [name, setName] = useState(classInfo?.name || "");
     const [subject, setSubject] = useState(classInfo?.subject || "");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    if (!classInfo) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,14 +35,18 @@ const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
             }
         } catch (err) {
             console.error("Failed to update class:", err);
-            setError("Failed to update class");
+            notifyError(getErrorMessage(err));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50"
+            role="dialog"
+            aria-modal="true"
+        >
             <div className="bg-white p-6 rounded shadow w-96">
                 <h2 className="text-xl font-semibold mb-4">Edit Class</h2>
 
@@ -54,6 +61,7 @@ const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Class Name"
+                            disabled={loading}
                         />
                     </div>
 
@@ -65,6 +73,7 @@ const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                             placeholder="Subject (optional)"
+                            disabled={loading}
                         />
                     </div>
 
@@ -73,6 +82,7 @@ const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
                             type="button"
                             onClick={onClose}
                             className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                            disabled={loading}
                         >
                             Cancel
                         </button>
@@ -81,7 +91,9 @@ const EditClassModal = ({ classInfo, onClose, onUpdated }) => {
                             type="submit"
                             disabled={loading}
                             className={`px-4 py-2 text-white rounded ${
-                                loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                                loading 
+                                    ? "bg-gray-400 cursor-not-allowed" 
+                                    : "bg-blue-600 hover:bg-blue-700"
                             }`}
                         >
                             {loading ? "Saving..." : "Save"}
