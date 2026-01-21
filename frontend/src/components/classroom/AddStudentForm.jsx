@@ -1,15 +1,33 @@
 // src/components/classroom/AddStudentForm.jsx
-import { useState } from 'react';
-import api from '../../utils/api';
+import { useState, useRef, useEffect } from 'react';
+import api, { getErrorMessage } from '../../utils/api';
 import styles from './AddStudentForm.module.css';
 import { notifySuccess, notifyError } from '../../utils/notify';
-import { getErrorMessage } from '../../utils/api';
 
 const AddStudentForm = ({ classId, onStudentAdded }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState({});
+    const [fieldError, setFieldError] = useState({});
+
+    const firstNameRef = useRef(null);
+    const lastNameRef = useRef(null);
+
+    // Dynamic page title
+    useEffect(() => {
+        const prevTitle = document.title;
+        document.title = "Add Student - ClassPulse";
+        return () => { document.title = prevTitle; };
+    }, []);
+
+    // Focus first invalid field
+    useEffect(() => {
+        if (fieldError.firstName && firstNameRef.current) {
+            firstNameRef.current.focus();
+        } else if (fieldError.lastName && lastNameRef.current) {
+            lastNameRef.current.focus();
+        }
+    }, [fieldError]);
 
     const validate = () => {
         const newError = {};
@@ -18,7 +36,7 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
             newError.firstName = 'First name is required';
         }
 
-        setError(newError);
+        setFieldError(newError);
         return Object.keys(newError).length === 0;
     }
 
@@ -43,14 +61,14 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
                 throw new Error('Invalid server response');
             }
 
-            onStudentAdded(student);
+            if (onStudentAdded) onStudentAdded(student);
 
             notifySuccess('Student added successfully'); // success -> toast
 
             // Clear form
             setFirstName('');
             setLastName('');
-            setError({});
+            setFieldError({});
         } catch (err) {
             notifyError(getErrorMessage(err)); // server -> toast
         } finally {
@@ -58,30 +76,43 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
         }
     };
 
+    const inputClasses = (hasError) => `${styles.input} ${hasError ? styles.inputError : ''}`;
+
     return (
-        <form onSubmit={handleSubmit} className={`${styles.form} ${styles.card}`}>
+        <form onSubmit={handleSubmit} className={`${styles.form} ${styles.card}`} noValidate>
             <div className={styles.field}>
-                <label className={styles.label}>First Name</label>
+                <label htmlFor="firstName" className='font-medium'>First Name <span className="text-red-500">*</span></label>
                 <input
+                    id="firstName"
+                    ref={firstNameRef}
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className={styles.input}
+                    className={inputClasses(!!fieldError.firstName)}
+                    aria-invalid={!!fieldError.firstName}
+                    aria-describedby={fieldError.firstName ? "firstName-error" : undefined}
                 />
-                {error.firstName && (
-                    <p className={styles.error}>{error.firstName}</p>
+                {fieldError.firstName && (
+                    <p id="firstName-error" className={styles.fieldError}>{fieldError.firstName}</p>
                 )}
             </div>
 
             <div className={styles.field}>
-                <label className={styles.label}>Last Name</label>
+                <label htmlFor="lastName" className="font-medium">Last Name</label>
                 <input
+                    id="lastName"
+                    ref={lastNameRef}
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className={styles.input}
+                    className={inputClasses(!!fieldError.lastName)}
+                    aria-invalid={!!fieldError.lastName}
+                    aria-describedby={fieldError.lastName ? "lastName-error" : undefined}
                 />
+                {fieldError.lastName && (
+                    <p id="lastName-error" className={styles.fieldError}>{fieldError.lastName}</p>
+                )}
             </div>
 
             <button
