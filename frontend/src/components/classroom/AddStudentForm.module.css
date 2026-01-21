@@ -43,7 +43,7 @@
 }
 
 /* Error */
-.error {
+.fieldError {
     color: #ef4444;
     font-size: 0.875rem;
     min-height: 1.1em;
