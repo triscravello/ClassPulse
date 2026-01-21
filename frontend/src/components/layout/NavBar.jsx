@@ -6,7 +6,7 @@ function NavBar({ currentPage, showBack, onBack }) {
     <nav className={styles.navbar}>
       <div className={styles.leftSection}>
         {showBack && (
-          <button className={styles.backButton} onClick={onBack}>
+          <button className={styles.backButton} onClick={onBack} aria-label="Go back">
             ← Back
           </button>
         )}
