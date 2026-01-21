@@ -114,7 +114,7 @@ const StudentView = () => {
 
       {/* Header */}
       <h1 className={styles.title}>{fullName}</h1>
-      <p className={styles.subtitle}>Student ID: {student._id}</p>
+      {/* <p className={styles.subtitle}>Student ID: {student._id}</p> */}
       <p>
         Class:{" "}
         {typeof student.class === "object"
@@ -126,8 +126,24 @@ const StudentView = () => {
       <div className={styles.infoPanel}>
         <p><strong>First Name:</strong> {student.first_name ?? "N/A"}</p>
         <p><strong>Last Name:</strong> {student.last_name ?? "N/A"}</p>
-        <p><strong>Created At:</strong> {new Date(student.createdAt).toLocaleString()}</p>
-        <p><strong>Updated At:</strong> {new Date(student.updatedAt).toLocaleString()}</p>
+        <p>
+          <strong>Created:</strong>{" "}
+          {new Date(student.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })}
+        </p>
+        
+        <p>
+          <strong>Updated:</strong>{" "}
+          {new Date(student.updatedAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })}
+        </p>
+
       </div>
 
       {/* Quick Actions */}
@@ -164,10 +180,14 @@ const StudentView = () => {
             {logs.map((log) => (
               <div key={log._id} className={styles.logItem}>
                 <p><strong>Type:</strong> {log.type}</p>
-                {log.comment && <p><strong>Note:</strong> {log.comment}</p>}
+                {log.comment && (<p className={styles.truncate} title={log.comment}><strong>Note:</strong> {log.comment}</p>)}
                 {log.value != null && <p><strong>Points:</strong> {log.value}</p>}
                 <p className="text-gray-500 text-sm">
-                  {new Date(log.createdAt).toLocaleString()}
+                  {new Date(log.createdAt).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
                 </p>
 
                 <button
