@@ -1,11 +1,21 @@
-.container {
-    padding: 1rem;
+/* Container / Card */
+.card {
     background: #ffffff;
     border-radius: 0.75rem;
+    padding: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     margin-top: 1rem;
+    animation: popIn 200ms ease;
 }
 
+/* Form Layout */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Field Labels */
 .title {
     font-size: 1rem;
     font-weight: 600;
@@ -13,26 +23,44 @@
     color: #111827;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.input, 
+/* Inputs & Textareas */
+.input,
 .textarea {
     padding: 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.375rem;
     border: 1px solid #d1d5db;
     font-size: 0.875rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.textarea {
-    resize: vertical;
-    min-height: 60px;
+.input:focus,
+.textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    outline: none;
 }
 
-/* Action row */
+.input:disabled,
+.textarea:disabled {
+    background-color: #f9fafb;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Error Styling */
+.inputError {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.fieldError {
+    color: #ef4444;
+    font-size: 0.875rem;
+    min-height: 1.1em;
+    margin-top: 0.25rem;
+}
+
+/* Actions (Submit / Cancel) */
 .actions {
     display: flex;
     gap: 0.5rem;
@@ -50,19 +78,16 @@
     transition: background-color 0.15s ease, transform 0.08s ease;
 }
 
-/* Pressed / active animation */
 .submitButton:active {
     transform: scale(0.97);
 }
 
-/* Disabled state*/
 .submitButton:disabled {
     background-color: #9ca3af;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Secondary action */
 .cancelButton {
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
@@ -72,7 +97,7 @@
     cursor: pointer;
 }
 
-/* Modal confirmation */
+/* Modal Confirmation Button */
 .modalButton {
     margin-top: 1rem;
     padding: 0.5rem 0.75rem;
@@ -81,4 +106,18 @@
     background-color: #2563eb;
     color: white;
     cursor: pointer;
+}
+
+/* Entrance Animation */
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .submitButton {
+        animation: none;
+    }
 }
