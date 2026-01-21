@@ -1,125 +1,122 @@
 .card{ 
-    position: relative;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    transition: box-shadow 0.2s ease, transform 0.15s ease;
-}
-
-/* Header styles */
-.header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    position: relative; 
+    padding: 1rem; 
+    border-radius: 0.75rem; 
+    border: 1px solid #e5e7eb; 
+    background: #ffffff; 
+    transition: box-shadow 0.2s ease, transform 0.15s ease; 
 } 
 
-.name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #111827;
-    line-height: 1.25;
+/* Header styles */ 
+.header { 
+    display: flex; 
+    align-items: flex-start; 
+    justify-content: space-between; 
+    gap: 0.75rem; 
+    margin-bottom: 0.75rem; 
+} 
+
+.name { 
+    font-size: 1rem; 
+    font-weight: 600; 
+    color: #111827; 
+    line-height: 1.25; 
+} 
+
+.meta { 
+    font-size: 0.75rem; 
+    color: #6b7280; 
+    margin-top: 0.125rem; 
+} 
+
+/* Hover affordance */ 
+.card:hover { 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
+    transform: translateY(-1px); 
+} 
+
+/* Selected student */ 
+.selected { 
+    border-color: #2563eb; 
+    background: #eff6ff; 
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); 
+} 
+
+/* Status dot (top-right) */ 
+.statusDot { 
+    position: absolute; 
+    top: 0.75rem; 
+    right: 0.75rem; 
+    width: 0.6rem; 
+    height: 0.6rem; 
+    border-radius: 9999px; 
+} 
+
+/* Example semantic states */ 
+.active { 
+    background-color: #22c55e; 
+} 
+
+.warning { 
+    background-color: #f59e0b; 
+} 
+
+.inactive { 
+    background-color: #9ca3af; 
+} 
+
+/* Hover-reveal action */ 
+.actions { 
+    position: absolute; 
+    bottom: 0.5rem; 
+    right: 0.5rem; 
+    display: flex; 
+    gap: 0.25rem; 
+    opacity: 0; 
+    transform: translateY(4px); 
+    transition: opacity 0.15s ease, transform 0.15s ease; 
+} 
+
+.card:hover .actions { 
+    opacity: 1; 
+    transform: translateY(0); 
+} 
+
+.actionButton { 
+    padding: 0.4rem 0.6rem; 
+    font-size: 0.75rem; 
+    font-weight: 500; 
+    border-radius: 0.5rem; 
+    border: 1px solid transparent; 
+    background: #f3f4f6; 
+    color: #111827; 
+    cursor: pointer; 
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.08s ease; 
 }
 
-.meta {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.125rem;
-}
+/* Press feedback */ 
+.actionButton:active { 
+    transform: scale(0.95); 
+} 
 
-/* Hover affordance */
-.card:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
-}
+/* Intent-based variants */ 
+.view:hover { 
+    background-color: #e0f2fe; 
+    border-color: #38bdf8; 
+} 
 
-/* Selected student */
-.selected {
-    border-color: #2563eb;
-    background: #eff6ff;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
+.quickLog:hover { 
+    background-color: #dcfce7; 
+    border-color: #22c55e; 
+} 
 
-/* Status dot (top-right) */
-.statusDot {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 9999px;
-}
+.delete:hover { 
+    background-color: #fee2e2; 
+    border-color: #ef4444; 
+} 
 
-/* Example semantic states */
-.active {
-    background-color: #22c55e;
-}
-
-.warning {
-    background-color: #f59e0b;
-}
-
-.inactive {
-    background-color: #9ca3af;
-}
-
-/* Hover-reveal action */
-.actions {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    display: flex;
-    gap: 0.25rem;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.card:hover .actions {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.actionButton {
-  padding: 0.4rem 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  border: 1px solid transparent;
-  background: #f3f4f6;
-  color: #111827;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.08s ease;
-}
-
-/* Press feedback */
-.actionButton:active {
-  transform: scale(0.95);
-}
-
-/* Intent-based variants */
-.view:hover {
-  background-color: #e0f2fe;
-  border-color: #38bdf8;
-}
-
-.quickLog:hover {
-  background-color: #dcfce7;
-  border-color: #22c55e;
-}
-
-.delete:hover {
-  background-color: #fee2e2;
-  border-color: #ef4444;
-}
-
-.truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.truncate { 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
 }
