@@ -22,8 +22,6 @@ const ClassCard = ({
 }) => {
   if (!classInfo) return null;
 
-  console.log('ClassCard render:', classInfo.name, 'studentCount =', classInfo.studentCount);
-
   // Helper to wrap actions with optional toast
   const wrapAction = (action, successMsg, errorMsg, toastEnabled = true) => async () => {
     try {
@@ -49,7 +47,7 @@ const ClassCard = ({
       }}
     >
       <div>
-        <h3 className="font-semibold text-lg">{classInfo.name}</h3>
+        <h3 className="font-semibold text-lg truncate" title={classInfo.name}>{classInfo.name}</h3>
         <p className="text-sm text-gray-500">
           Students: {classInfo.studentCount ?? 0}
         </p>
