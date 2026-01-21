@@ -45,6 +45,11 @@
   text-decoration: underline;
 }
 
+.backButton:focus-visible {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
+}
+
 /* Applied when page scrolls */
 .scrolled {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -72,6 +77,11 @@
 .navLinks a.active {
   font-weight: 700;
   border-bottom: 2px solid #4F46E5;
+}
+
+.navLinks a:focus-visible {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
 }
 
 /* Right-side controls */
