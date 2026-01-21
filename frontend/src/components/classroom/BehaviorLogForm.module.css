@@ -108,6 +108,69 @@
     cursor: pointer;
 }
 
+/* History container */
+.history {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.historyTitle {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.historyEmpty {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* List */
+.historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.historyItem {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Header row */
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category {
+  font-weight: 500;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Comment */
+.comment {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Value */
+.value {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #2563eb;
+}
+
 /* Entrance Animation */
 @keyframes popIn {
     from { opacity: 0; transform: scale(0.97); }
