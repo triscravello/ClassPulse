@@ -60,7 +60,7 @@ const ClassCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              wrapAction(onView, null, "Failed to open class.", showToast.view ?? false)
+              wrapAction(onView, null, "Failed to open class.", showToast.view ?? false)();
             }}
             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -71,7 +71,7 @@ const ClassCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              wrapAction(onReports, null, "Failed to load reports.", showToast.reports ?? false)
+              wrapAction(onReports, null, "Failed to load reports.", showToast.reports ?? false)();
             }}
             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
           >
@@ -82,7 +82,7 @@ const ClassCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              wrapAction(onEdit, "Class updated successfully.", "Failed to update class.", showToast.edit ?? true)
+              wrapAction(onEdit, "Class updated successfully.", "Failed to update class.", showToast.edit ?? true)();
             }}
             className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
           >
@@ -93,7 +93,7 @@ const ClassCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              wrapAction(() => onDelete(classInfo._id), "Class deleted successfully.", "Failed to delete class.", showToast.delete ?? true)
+              wrapAction(() => onDelete(classInfo._id), "Class deleted successfully.", "Failed to delete class.", showToast.delete ?? true)();
             }}
             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
