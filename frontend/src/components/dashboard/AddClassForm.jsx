@@ -1,5 +1,5 @@
 // src/components/dashboard/AddClassForm.jsx
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api, { getErrorMessage } from '../../utils/api';
 import styles from './AddClassForm.module.css';
 import { notifySuccess, notifyError } from "../../utils/notify";
@@ -7,11 +7,32 @@ import { notifySuccess, notifyError } from "../../utils/notify";
 const AddClassForm = ({ onClassAdded }) => {
     const [className, setClassName] = useState('');
     const [loading, setLoading] = useState(false);
+    const [fieldError, setFieldError] = useState('');
+    const inputRef = useRef(null);
+
+    // Dynamic page title
+    useEffect(() => {
+        const prevTitle = document.title;
+        document.title = "Add Class - ClassPulse";
+        return () => { document.title = prevTitle; };
+    }, []);
+
+    // Focus input on error
+    useEffect(() => {
+        if (fieldError && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [fieldError]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!className.trim()) return;
+        
+        if (!className.trim()) {
+            setFieldError('Class name is required');
+            return;
+        };
 
+        setFieldError('');
         setLoading(true);
 
         try {
@@ -35,13 +56,18 @@ const AddClassForm = ({ onClassAdded }) => {
                     <label className={styles.label}>
                         Class Name:
                     <input 
+                        id="className"
+                        ref={inputRef}
                         type="text"
-                        className={styles.inputField}
+                        className={`${styles.inputField} ${fieldError ? styles.inputError : ''}`}
                         value={className}
                         onChange={(e) => setClassName(e.target.value)}
                         disabled={loading}
                         required
+                        aria-invalid={!!fieldError}
+                        aria-describedby={fieldError ? "className-error" : undefined}
                     />
+                    {fieldError && <p id="className-error" className={styles.fieldError}>{fieldError}</p>}
                     </label>
                 </div>
             
