@@ -47,13 +47,22 @@ const StudentReportSummary = ({ studentId, from, to }) => {
                 Student Summary
             </h3>
 
+            {(from || to) && (
+                <p className={styles.dateRange}>
+                    {from ? new Date(from).toLocaleDateString() : '...'} –{' '}
+                    {to ? new Date(to).toLocaleDateString() : '...'}
+                </p>
+            )}
+
             <div className={styles.summaryGrid}>
                 <div className={`${styles.statCard} ${styles.scorePositive}`}>
                     <p className={styles.statLabel}>
                         Participation Rate
                     </p>
                     <p className={styles.statValue}>
-                        {data.participation_rate?.toFixed(2)} logs/days
+                        {typeof data.participation_rate === 'number' 
+                            ? `${data.participation_rate.toFixed(2)} logs/day`
+                            : '-'}
                     </p>
                 </div>
 
@@ -62,7 +71,9 @@ const StudentReportSummary = ({ studentId, from, to }) => {
                         Behavior Score
                     </p>
                     <p className={styles.statValue}>
-                        {data.behavior_score}
+                        {typeof data.behavior_score === 'number'
+                            ? data.behavior_score
+                            : '-'}
                     </p>
                 </div>
             </div>
