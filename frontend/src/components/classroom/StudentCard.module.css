@@ -117,3 +117,9 @@
   background-color: #fee2e2;
   border-color: #ef4444;
 }
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
