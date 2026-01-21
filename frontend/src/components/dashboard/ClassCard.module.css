@@ -1,90 +1,76 @@
 .card {
-    background-color: #ffffff;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    outline: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  outline: none;
 }
 
-/* Hover elevation */
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/* Focus state (keyboard users) */
 .card:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 
-/* Click feedback */
 .card:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
-/* Selected / active state */
 .selected {
-    border: 2px solid #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
 }
 
-/* Text truncation */
 .truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Card Variants */
-/* Primary card (emphasized action */
-.primary {
-    border: 1px solid #3b82f6;
-}
-
-.primary:hover {
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-}
-
-/* Secondary card (subtle/informational) */
-.secondary {
-    background-color: #f9fafb;
-    border: 1px solid #d1d5db;
-}
-
-.secondary:hover {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-/* Destructive card (danger action) */
-.destructive{
-    border: 1px solid #ef4444;
-    background-color: #fef2f2;
-}
-
-.destructive:hover {
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
-}
-
-.disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-.card .card-content {
-    flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cardFooter {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.actionButton {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+}
+
+.actionButton:active {
+  transform: scale(0.95);
+}
+
+.view:hover {
+  background-color: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+.edit:hover {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.delete:hover {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+.actionButton:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
