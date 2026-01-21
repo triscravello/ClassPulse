@@ -29,7 +29,7 @@ const ClassCard = ({
       if (toastEnabled && successMsg) notifySuccess(successMsg);
     } catch (err) {
       if (toastEnabled && errorMsg) notifyError(errorMsg);
-      console.error(err);
+      console.error("ClassCard action error:", err);
     }
   };
 
@@ -38,6 +38,7 @@ const ClassCard = ({
       className={`${styles.card} ${isSelected ? styles.selected : ""}`}
       tabIndex={0}
       role="button"
+      aria-pressed={isSelected}
       onClick={() => onView?.(classInfo)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -46,13 +47,20 @@ const ClassCard = ({
         }
       }}
     >
+      {/* Card Content */}
       <div>
-        <h3 className="font-semibold text-lg truncate" title={classInfo.name}>{classInfo.name}</h3>
+        <h3
+          className="font-semibold text-lg truncate"
+          title={classInfo.name}
+        >
+          {classInfo.name}
+        </h3>
         <p className="text-sm text-gray-500">
           Students: {classInfo.studentCount ?? 0}
         </p>
       </div>
 
+      {/* Action Buttons */}
       <div className="mt-3 flex gap-2 flex-wrap">
         {onView && (
           <button
@@ -60,7 +68,7 @@ const ClassCard = ({
               e.stopPropagation();
               wrapAction(onView, null, "Failed to open class.", showToast.view ?? false)();
             }}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-3 py-1 bg-blue-500 text-white rounded font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           >
             View Class
           </button>
@@ -71,7 +79,7 @@ const ClassCard = ({
               e.stopPropagation();
               wrapAction(onReports, null, "Failed to load reports.", showToast.reports ?? false)();
             }}
-            className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+            className="px-3 py-1 bg-green-500 text-white rounded font-medium hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
           >
             View Reports
           </button>
@@ -82,7 +90,7 @@ const ClassCard = ({
               e.stopPropagation();
               wrapAction(onEdit, "Class updated successfully.", "Failed to update class.", showToast.edit ?? true)();
             }}
-            className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
+            className="px-3 py-1 bg-yellow-500 text-black rounded font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
           >
             Edit
           </button>
@@ -93,7 +101,7 @@ const ClassCard = ({
               e.stopPropagation();
               wrapAction(() => onDelete(classInfo._id), "Class deleted successfully.", "Failed to delete class.", showToast.delete ?? true)();
             }}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-3 py-1 bg-red-500 text-white rounded font-medium hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
           >
             Delete
           </button>
