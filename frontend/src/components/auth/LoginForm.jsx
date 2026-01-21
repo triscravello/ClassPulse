@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import api from '../../utils/api';
@@ -9,6 +9,9 @@ import { getErrorMessage } from '../../utils/api';
 const LoginForm = () => {
   const { login } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,21 +28,46 @@ const LoginForm = () => {
     setFieldError((prev) => ({ ...prev, password: '' }));
   };
 
+  // Focus first field with error when errors change
+  useEffect(() => {
+    if (fieldError.email && emailRef.current) emailRef.current.focus();
+    else if (fieldError.password && passwordRef.current) passwordRef.current.focus();
+  }, [fieldError]);
+
+  // Set dynamic page title on mount
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = "Login - ClassPulse";
+
+    return () => {
+      // Restore previous title on unmount
+      document.title = previousTitle;
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
 
+    // Reset errors
     setFieldError({ email: '', password: '' });
     setIsSubmitting(true);
 
     try {
+      // Basic client-side valiation
+      if (!email.trim() || !password.trim()) {
+        setFieldError({
+          email: !email.trim() ? 'Email is required' : '',
+          password: !password.trim() ? 'Password is required' : '',
+        });
+        return;
+      }
+
       const response = await api.post('/auth/login', { email, password });
       const { user, token } = response.data;
 
       login(user, token);
-
-      console.log("Login successful, showing toast");
-      notifySuccess("Welcome back!"); // ✅ Toast will now show
+      notifySuccess("Welcome back!"); 
       navigate("/dashboard");
     } catch (err) {
       const msg = getErrorMessage(err);
@@ -65,11 +93,12 @@ const LoginForm = () => {
       onSubmit={handleSubmit}
       noValidate
     >
-      <label className="sr-only" htmlFor="email">Email</label>
+      <label className="font-medium" htmlFor="email">Email <span className='text-red-500'>*</span></label>
       <input
         id="email"
+        ref={emailRef}
         type="email"
-        placeholder="Email"
+        placeholder="Enter your email"
         value={email}
         onChange={handleEmailChange}
         required
@@ -81,11 +110,12 @@ const LoginForm = () => {
         <p id="email-error" className={styles.fieldError}>{fieldError.email}</p>
       )}
 
-      <label className="sr-only" htmlFor="password">Password</label>
+      <label className="font-medium" htmlFor="password">Password <span className='text-red-500'>*</span></label>
       <input
         id="password"
+        ref={passwordRef}
         type="password"
-        placeholder="Password"
+        placeholder="Enter your password"
         value={password}
         onChange={handlePasswordChange}
         required
