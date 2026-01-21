@@ -13,6 +13,9 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
+  const [logs, setLogs] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
   const categoryRef = useRef(null);
 
   // Dynamic Page Title
@@ -68,6 +71,22 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      setLoadingHistory(true);
+      try {
+        const response = await api.get(`/behaviorlogs/student/${studentId}`);
+        setLogs(response.data || []);
+      } catch (err) {
+        console.error("Failed to load behavior history");
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
+    if (studentId) fetchLogs();
+  }, [studentId]);
 
   const inputClasses = (hasError) =>
     `${styles.input} ${hasError ? styles.inputError : ''}`;
@@ -155,6 +174,48 @@ const BehaviorLogForm = ({ studentId, onLogAdded, onClose }) => {
           </button>
         </Modal>
       )}
+
+      {/* Behavior History */}
+    <div className={styles.history}>
+      <h3 className={styles.historyTitle}>Recent Behavior Logs</h3>
+
+      {loadingHistory && (
+        <p className={styles.historyEmpty}>Loading history...</p>
+      )}
+
+      {!loadingHistory && logs.length === 0 && (
+        <p className={styles.historyEmpty}>No behavior logs yet.</p>
+      )}
+
+      {!loadingHistory && logs.length > 0 && (
+        <ul className={styles.historyList}>
+          {[...logs]
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((log) => (
+              <li key={log._id} className={styles.historyItem}>
+                <div className={styles.historyHeader}>
+                  <span className={styles.category}>{log.category}</span>
+                  <span className={styles.date}>
+                    {new Date(log.createdAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
+
+                <p className={styles.comment} title={log.comment || ''}>{log.comment || '-'}</p>
+
+                {typeof log.valye === 'number' && (
+                  <span className={styles.value}>
+                    {log.value > 0 ? `+${log.value}` : log.value} pts
+                  </span>
+                )}
+              </li>
+            ))}
+        </ul>
+      )}
+    </div>
     </>
   );
 };
