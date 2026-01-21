@@ -8,7 +8,18 @@ const StudentCard = ({ student, onView, onQuickLog, onDelete, selected }) => {
     const fullName = `${first} ${last}`.trim();
 
     return (
-        <div className={`${styles.card} ${selected ? styles.selected : ""}`}>
+        <div 
+            className={`${styles.card} ${selected ? styles.selected : ""}`}
+            role="button"
+            tabIndex={0}
+            onClick={() => onView(student)}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onView(student);
+                }
+            }}
+        >
             
             {/* Header */}
             <div className={styles.header}>
@@ -26,14 +37,20 @@ const StudentCard = ({ student, onView, onQuickLog, onDelete, selected }) => {
             {/* Action Buttons */}
             <div className={styles.actions}>
                 <button 
-                    onClick={() => onView(student)} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onView(student)
+                    }} 
                     className={`${styles.actionButton} ${styles.view}`}
                 >
                     View Details
                 </button>
 
                 <button 
-                    onClick={() => onQuickLog(student)} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onQuickLog(student)
+                    }} 
                     className={`${styles.actionButton} ${styles.quickLog}`}
                 >
                     Quick Log
@@ -41,7 +58,10 @@ const StudentCard = ({ student, onView, onQuickLog, onDelete, selected }) => {
 
                 {onDelete && (
                     <button 
-                        onClick={() => onDelete(student._id)} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(student._id)
+                        }} 
                         className={`${styles.actionButton} ${styles.delete}`}
                     >
                         Remove
