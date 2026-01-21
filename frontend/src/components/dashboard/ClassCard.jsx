@@ -40,6 +40,13 @@ const ClassCard = ({
       className={`${styles.card} ${isSelected ? styles.selected : ""}`}
       tabIndex={0}
       role="button"
+      onClick={() => onView?.(classInfo)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onView?.(classInfo);
+        }
+      }}
     >
       <div>
         <h3 className="font-semibold text-lg">{classInfo.name}</h3>
@@ -51,12 +58,10 @@ const ClassCard = ({
       <div className="mt-3 flex gap-2 flex-wrap">
         {onView && (
           <button
-            onClick={wrapAction(
-              onView,
-              null, // no success toast for view
-              "Failed to open class.",
-              showToast.view ?? false
-            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              wrapAction(onView, null, "Failed to open class.",showToast.view ?? false)
+            }}
             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             View Class
@@ -64,12 +69,10 @@ const ClassCard = ({
         )}
         {onReports && (
           <button
-            onClick={wrapAction(
-              onReports,
-              null, // no success toast for reports
-              "Failed to load reports.",
-              showToast.reports ?? false
-            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              wrapAction(onReports, null, "Failed to load reports.", showToast.reports ?? false)
+            }}
             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
           >
             View Reports
@@ -77,12 +80,10 @@ const ClassCard = ({
         )}
         {onEdit && (
           <button
-            onClick={wrapAction(
-              onEdit,
-              "Class updated successfully.",
-              "Failed to update class.",
-              showToast.edit ?? true
-            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              wrapAction(onEdit, "Class updated successfully.", "Failed to update class.", showToast.edit ?? true)
+            }}
             className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
           >
             Edit
@@ -90,12 +91,10 @@ const ClassCard = ({
         )}
         {onDelete && classInfo._id && (
           <button
-            onClick={wrapAction(
-              () => onDelete(classInfo._id),
-              "Class deleted successfully.",
-              "Failed to delete class.",
-              showToast.delete ?? true
-            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              wrapAction(() => onDelete(classInfo._id), "Class deleted successfully.", "Failed to delete class.", showToast.delete ?? true)
+            }}
             className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Delete
