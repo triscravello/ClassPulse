@@ -8,10 +8,6 @@ const links = [
     to: "/classes",
     label: "Classes",
     icon: "📚",
-    subLinks: [
-      { to: "/classes/1", label: "Class 1" },
-      { to: "/classes/2", label: "Class 2" },
-    ],
   },
   { to: "/reports", label: "Reports", icon: "📊" },
 ];
@@ -33,9 +29,7 @@ function Sidebar({ collapsed = false }) {
               <NavLink
                 to={link.to}
                 title={collapsed ? link.label : undefined}
-                className={({ isActive }) =>
-                  `${styles.link} ${isActive ? styles.active : ""}`
-                }
+                className={`${styles.link} ${parentActive ? styles.active : ""}`}
               >
                 <span className={styles.icon}>{link.icon}</span>
                 <span
