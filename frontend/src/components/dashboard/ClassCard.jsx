@@ -60,7 +60,7 @@ const ClassCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              wrapAction(onView, null, "Failed to open class.",showToast.view ?? false)
+              wrapAction(onView, null, "Failed to open class.", showToast.view ?? false)
             }}
             className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
