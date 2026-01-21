@@ -6,6 +6,9 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
     outline: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 /* Hover elevation */
@@ -14,8 +17,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Focus elevation */
-.card:focus {
+/* Focus state (keyboard users) */
+.card:focus-visible {
+    outline: none;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 
@@ -28,17 +32,60 @@
 /* Selected / active state */
 .selected {
     border: 2px solid #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246. 0.25);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
-/* Keyboard accessibility */
-.card:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
-}
-
+/* Text truncation */
 .truncate {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Card Variants */
+/* Primary card (emphasized action */
+.card.primary {
+    border: 1px solid #3b82f6;
+}
+
+.card.primary:hover {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Secondary card (subtle/informational) */
+.card.secondary {
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+}
+
+.card.secondary:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Destructive card (danger action) */
+.card.destructive{
+    border: 1px solid #ef4444;
+    background-color: #fef2f2;
+}
+
+.card.destructive:hover {
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Accessibility & Layout */
+.card:disabled,
+.card.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.card .card-content {
+    flex: 1;
+}
+
+.card .card-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
