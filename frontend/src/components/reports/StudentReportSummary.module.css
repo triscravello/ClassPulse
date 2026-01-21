@@ -41,3 +41,10 @@
   color: #991b1b;
   background: #fef2f2;
 }
+
+/* Date range */
+.dateRange {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
