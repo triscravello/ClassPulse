@@ -93,6 +93,14 @@
   animation: fadeSlideIn 220ms ease;
 }
 
+/* ===== Truncate ===== */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
 /* ===== Animations ===== */
 
 @keyframes fadeIn {
