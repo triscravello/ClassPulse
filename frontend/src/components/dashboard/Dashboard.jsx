@@ -105,7 +105,8 @@ const Dashboard = () => {
     <div className="max-w-5xl mx-auto p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <p className='text-sm text-gray-600'>Welcome, {user.name}</p>
         <button
           onClick={logout}
           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -143,7 +144,7 @@ const Dashboard = () => {
             ))}
           </div>
         ) : (
-          <p>No classes yet. Add one below!</p>
+          <p>You don't have any classes yet. Create your first class to get started.</p>
         )}
       </div>
 
