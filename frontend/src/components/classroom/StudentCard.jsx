@@ -24,8 +24,13 @@ const StudentCard = ({ student, onView, onQuickLog, onDelete, selected }) => {
             {/* Header */}
             <div className={styles.header}>
                 <div>
-                    <h3 className={styles.name}>{fullName || "Unnamed Student"}</h3>
-                    <p className={styles.meta}>ID: {student._id}</p>
+                    <h3 
+                        className={`${styles.name} ${styles.truncate}`} 
+                        title={fullName || "Unnamed Student"}
+                    >
+                        {fullName || "Unnamed Student"}
+                    </h3>
+                    {/* <p className={styles.meta}>ID: {student._id}</p> */}
                 </div>
 
                 {/* Status indicator */}
