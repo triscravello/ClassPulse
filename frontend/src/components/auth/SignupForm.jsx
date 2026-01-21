@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import api from '../../utils/api';
@@ -9,6 +9,10 @@ import { getErrorMessage } from '../../utils/api';
 const SignupForm = () => {
   const { login } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,6 +35,20 @@ const SignupForm = () => {
 
   const strength = getPasswordStrength();
   const strengthWidth = { weak: '33%', medium: '66%', strong: '100%' }[strength];
+
+  // --- Dynamic Page Title ---
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = "Sign Up - ClassPulse";
+    return () => { document.title = prevTitle };
+  }, []);
+
+  // --- Focus first field with error ---
+  useEffect(() => {
+    if (fieldError.name && nameRef.current) nameRef.current.focus();
+    else if (fieldError.email && emailRef.current) emailRef.current.focus();
+    else if (fieldError.password && passwordRef.current) passwordRef.current.focus();
+  }, [fieldError]);
 
   // --- Submit Handler ---
   const handleSubmit = async (e) => {
@@ -68,7 +86,7 @@ const SignupForm = () => {
       } else if (msg.toLowerCase().includes('password')) {
         setFieldError(prev => ({ ...prev, password: msg }));
       } else {
-        notifyError(msg || "Something went wrong.");
+        notifyError(msg || "Something went wrong. Please try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -84,9 +102,10 @@ const SignupForm = () => {
     <div className={`bg-white p-6 rounded-xl shadow ${styles.card}`}>
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Name */}
-        <label className="sr-only" htmlFor="name">Name</label>
+        <label className="sr-only" htmlFor="name">Name <span className='text-red-500'>*</span></label>
         <input
           id="name"
+          ref={nameRef}
           type="text"
           placeholder="Name"
           value={name}
@@ -99,9 +118,10 @@ const SignupForm = () => {
         {hasError('name') && <p id="name-error" className={styles.fieldError}>{fieldError.name}</p>}
 
         {/* Email */}
-        <label className="sr-only" htmlFor="email">Email</label>
+        <label className="sr-only" htmlFor="email">Email <span className='text-red-500'>*</span></label>
         <input
           id="email"
+          ref={emailRef}
           type="email"
           placeholder="Email"
           value={email}
@@ -115,9 +135,10 @@ const SignupForm = () => {
 
         {/* Password */}
         <div className="relative">
-          <label className="sr-only" htmlFor="password">Password</label>
+          <label className="sr-only" htmlFor="password">Password <span className='text-red-500'>*</span></label>
           <input
             id="password"
+            ref={passwordRef}
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
