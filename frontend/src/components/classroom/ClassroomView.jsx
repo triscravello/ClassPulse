@@ -159,16 +159,10 @@ const ClassroomView = () => {
       {/* Header Actions */}
       <div className={styles.headerActions}>
         <button
-          onClick={() => navigate('/dashboard')}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Back to Dashboard
-        </button>
-        <button
           onClick={goToReports}
           className="px-3 py-1 bg-blue-500 rounded hover:bg-blue-600 text-white"
         >
-          View Reports
+          View Class Reports
         </button>
       </div>
 
