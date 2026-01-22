@@ -11,6 +11,7 @@ import ReportsPage from "./pages/Reports";
 import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
+import ClassesPage from "./pages/Classes";
 
 const AppRoutes = () => (
   <Routes>
@@ -29,6 +30,14 @@ const AppRoutes = () => (
         element={
           <PrivateRoute>
             <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/classes"
+        element={
+          <PrivateRoute>
+            <ClassesPage />
           </PrivateRoute>
         }
       />
