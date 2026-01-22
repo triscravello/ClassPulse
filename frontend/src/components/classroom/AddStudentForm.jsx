@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import api, { getErrorMessage } from '../../utils/api';
 import styles from './AddStudentForm.module.css';
-import { notifySuccess, notifyError } from '../../utils/notify';
+import { notifyError } from '../../utils/notify';
 
 const AddStudentForm = ({ classId, onStudentAdded }) => {
     const [firstName, setFirstName] = useState('');
@@ -62,8 +62,6 @@ const AddStudentForm = ({ classId, onStudentAdded }) => {
             }
 
             if (onStudentAdded) onStudentAdded(student);
-
-            notifySuccess('Student added successfully'); // success -> toast
 
             // Clear form
             setFirstName('');
