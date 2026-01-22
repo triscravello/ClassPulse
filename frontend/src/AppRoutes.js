@@ -8,6 +8,9 @@ import LoginForm from "./components/auth/LoginForm";
 import ClassroomPage from "./pages/Classroom";
 import StudentView from "./pages/StudentView";
 import ReportsPage from "./pages/Reports";
+import Privacy from "./pages/Privacy";
+import Support from "./pages/Support";
+import Terms from "./pages/Terms";
 
 const AppRoutes = () => (
   <Routes>
@@ -18,13 +21,54 @@ const AppRoutes = () => (
     <Route path="/login" element={<LoginForm />} />
     <Route path="/signup" element={<SignupForm />} />
 
-    {/* Protected routes with layout */}
-    <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
-      <Route path="/dashboard" element={<DashboardPage />} />
-      <Route path="/classes/:id" element={<ClassroomPage />} />
-      <Route path="/classes/:classId/students/:studentId" element={<StudentView />} />
-      <Route path="/reports" element={<ReportsPage />} />
-      <Route path="/reports/class/:classId" element={<ReportsPage />} />
+    {/* MainLayout routes */}
+    <Route path="/" element={<MainLayout />}>
+      {/* Protected routes */}
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/classes/:id"
+        element={
+          <PrivateRoute>
+            <ClassroomPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/classes/:classId/students/:studentId"
+        element={
+          <PrivateRoute>
+            <StudentView />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <PrivateRoute>
+            <ReportsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/reports/class/:classId"
+        element={
+          <PrivateRoute>
+            <ReportsPage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Public legal/support pages */}
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/support" element={<Support />} />
     </Route>
 
     {/* Catch-all */}
