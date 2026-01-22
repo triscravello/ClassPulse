@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import BehaviorLogForm from "../components/classroom/BehaviorLogForm";
 import QuickActionButtons from "../components/classroom/QuickActionButtons";
 import StudentReportSummary from "../components/reports/StudentReportSummary";
+import NavBar from "../components/layout/NavBar";
 import styles from "./StudentView.module.css";
 import { toast } from "react-hot-toast";
 
@@ -121,16 +122,12 @@ const StudentView = () => {
 
   return (
     <div className={styles.page}>
-      {/* Back Navigation */}
-      <button
-        onClick={() => navigate(`/classes/${classId}`)}
-        className={styles.backButton}
-      >
-        ← Back to Class
-      </button>
-
-      {/* Header */}
-      <h1 className={styles.title}>{fullName}</h1>
+      {/* Back Navigation + Header */}
+      <NavBar
+        title={fullName}
+        showBack={true}
+        onBack={() => navigate(`/classes/${classId}`)}
+      />
       <p className={styles.subtle}>
         Class:{" "}
         {typeof student.class === "object"
