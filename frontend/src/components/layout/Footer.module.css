@@ -23,6 +23,7 @@
 .links {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap; /* allow wrapping if links are too long on small screens */
 }
 
 .link {
@@ -48,12 +49,14 @@
     background-color: #2563eb;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0.8
 }
 
 .link:hover::after,
 .link:focus-visible::after {
     transform: scaleX(1);
+    opacity: 1;
 }
 
 /* Responsive stacking */
@@ -61,5 +64,12 @@
     .inner {
         flex-direction: column;
         gap: 0.75rem;
+    }
+}
+
+/* Padding adjustment for smaller devices */
+@media (max-width: 640px) {
+    .footer {
+        padding: 1rem;
     }
 }
