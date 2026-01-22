@@ -35,7 +35,7 @@ const createStudent = asyncHandler(async (req, res) => {
     req.user.id
   );
 
-  res.status(201).json(newStudent);
+  res.status(201).json({ student: newStudent });
 });
 
 /**
