@@ -19,12 +19,12 @@ const signup = async (name, email, password) => {
     return { error: "User already exists" };
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
     name: name.trim(),
     email: normalizedEmail,
-    password: hashedPassword,
+    password, // let the model hash it once, not twice
     role: "teacher", // default role if needed
   });
 
