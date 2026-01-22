@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import NavBar from "./NavBar";
 import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 import styles from "./MainLayout.module.css";
 
 function MainLayout() {
@@ -54,6 +55,7 @@ function MainLayout() {
         <main className={styles.outlet}>
           <Outlet /> {/* Nested routed content */}
         </main>
+        <Footer />
       </div>
     </div>
   );
