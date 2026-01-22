@@ -26,7 +26,7 @@ const ExportButton = ({ classId, fromDate, toDate }) => {
             });
 
             const blob = new Blob([response.data], {
-                type: type === 'csv' ? 'text/csv' : 'application/odf'
+                type: type === 'csv' ? 'text/csv' : 'application/pdf'
             });
 
             const url = window.URL.createObjectURL(blob);
