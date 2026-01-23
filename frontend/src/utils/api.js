@@ -5,7 +5,7 @@ export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 // Create an axios instance
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: process.env.REACT_APP_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
