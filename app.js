@@ -19,12 +19,31 @@ const app = express();
 
 // Security middlewares
 app.use(helmet()); // set secure HTTP headers
+
+// Allowed origins for CORS
+const allowedOrigins = [
+    "http://localhost:3000", // frontend local dev
+    "https://class-pulse-henna.vercel.app" // production frontend
+]
 app.use(cors({
-    origin: "http://localhost:3000", 
+    origin: function(origin, callback) {
+        if (!origin) return callback(null, true); // allow Postman or curl
+        if (allowedOrigins.indexOf(origin) === -1) {
+            return callback(new Error(`CORS policy does not allow access from ${origin}`), false);
+        }
+        return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 })); // restrict API access to frontend only
+
+// Handle preflight OPTIONS requests
+app.options('*', cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+}));
 
 // Parse JSON & URL-encoded bodies
 app.use(express.json());
