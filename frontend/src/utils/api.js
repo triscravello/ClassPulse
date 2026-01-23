@@ -1,15 +1,16 @@
 // src/utils/api.js
 import axios from 'axios';
 
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+// Base URL: local dev or production
+export const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1";
 
 // Create an axios instance
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true,
+    withCredentials: true, // only if backend uses cookies, remove if JWT is in body
 });
 
 // Function to set the JWT token in headers
