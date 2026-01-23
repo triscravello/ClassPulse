@@ -46,12 +46,7 @@ const login = async (email, password) => {
   if (!user) return { error: "User not found" };
   if (!user.password) return { error: "Password not set for this user" };
 
-  console.log("Logging in:", normalizedEmail);
-  console.log("Hashed password in DB:", user.password);
-  console.log("Password received:", password);
-
   const isMatch = await bcrypt.compare(password, user.password);
-  console.log("Password match?", isMatch);
   if (!isMatch) return { error: "Invalid credentials" };
 
   const token = generateToken(user._id);
