@@ -25,7 +25,8 @@ const allowedOrigins = [
     "http://localhost:3000", // frontend local dev
     "https://class-pulse-henna.vercel.app" // production frontend
 ]
-app.use(cors({
+
+const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true); // allow Postman or curl
         if (allowedOrigins.indexOf(origin) === -1) {
@@ -36,14 +37,9 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
-})); // restrict API access to frontend only
+}; // restrict API access to frontend only
 
-// Handle preflight OPTIONS requests
-app.options('*', cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-}));
+app.use(cors(corsOptions));
 
 // Parse JSON & URL-encoded bodies
 app.use(express.json());
