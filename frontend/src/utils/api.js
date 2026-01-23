@@ -16,16 +16,16 @@ const api = axios.create({
 // Function to set the JWT token in headers
 export const setAuthToken = (token) => {
     if (token) {
-        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
-        delete api.defaults.headers.common.Authorization;
+        delete api.defaults.headers.common['Authorization'];
     }
 };
 
 // Request interceptor to attach JWT token automatically
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); // ensure this key matches your storage
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
