@@ -1,0 +1,76 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #111827;
+}
+
+.subtitle {
+    font-size: 1.125rem;
+    color: #4b5563;
+    max-width: 600px;
+    margin-bottom: 2rem;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.primaryButton {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.primaryButton:hover {
+    background-color: #1d4ed8;
+}
+
+.secondaryButton {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #111827;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.secondaryButton:hover {
+    background-color: #fef4f6;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #374151;
+}
+
+.featureItem {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.logo {
+    width: 88px;
+    height: auto;
+    margin-bottom: 1.25rem;
+}
