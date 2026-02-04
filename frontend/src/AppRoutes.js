@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import MainLayout from './components/layout/MainLayout';
 import DashboardPage from './pages/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
@@ -12,11 +12,12 @@ import Privacy from "./pages/Privacy";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
 import ClassesPage from "./pages/Classes";
+import PublicHome from "./pages/PublicHome";
 
 const AppRoutes = () => (
   <Routes>
-    {/* Default redirect */}
-    <Route path="/" element={<Navigate to="/login" replace />} />
+    {/* Default: Public Home */}
+    <Route path="/" element={<PublicHome />} />
 
     {/* Public routes */}
     <Route path="/login" element={<LoginForm />} />
