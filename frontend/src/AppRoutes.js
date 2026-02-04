@@ -22,6 +22,9 @@ const AppRoutes = () => (
     {/* Public routes */}
     <Route path="/login" element={<LoginForm />} />
     <Route path="/signup" element={<SignupForm />} />
+    <Route path="/privacy" element={<Privacy />} />
+    <Route path="/terms" element={<Terms />} />
+    <Route path="/support" element={<Support />} />
 
     {/* MainLayout routes */}
     <Route path="/" element={<MainLayout />}>
