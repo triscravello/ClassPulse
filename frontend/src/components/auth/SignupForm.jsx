@@ -182,7 +182,7 @@ const SignupForm = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`bg-green-600 text-white px-4 py-2 rounded w-full transition transform duration-100 hover:scale-[0.98] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''} ${styles.submitBtn}`}
+          className={`bg-green-600 text-white px-4 py-2 rounded w-full transition transform duration-100 hover:scale-[0.98] ${isSubmitting ? styles.submitBtnLoading : ''} ${styles.submitBtn}`}
         >
           {isSubmitting ? "Signing up..." : "Sign Up"}
         </button>
