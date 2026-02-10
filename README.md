@@ -7,13 +7,15 @@
 ## Table of Contents
 1. [Project Description](#project-description)
 2. [Tech Stack](#tech-stack)
-3. [Setup & Installation](#setup--installation)
-4. [Features](#features)
-5. [Usage](#usage)
-6. [Styling Strategy](#styling-strategy)
-7. [Roadmap](#roadmap)
-8. [Contributing](#contributing)
-9. [License](#license)
+3. [Database Schema](#database-schema)
+4. [MVC / Client-Server Flow](#mvc--client-server-flow)
+5. [Setup & Installation](#setup--installation)
+6. [Features](#features)
+7. [Usage](#usage)
+8. [Styling Strategy](#styling-strategy)
+9. [Roadmap](#roadmap)
+10. [Contributing](#contributing)
+11. [License](#license)
 
 ---
 
@@ -31,6 +33,16 @@ Built with scalability, clarity, and educator usability in mind.
 - **Backend:** Node.js, Express.js, JWT Authentication 
 - **Database:** MongoDB  
 - **Other Libraries:** PDFKit, Chart.js, Axios
+
+---
+
+## Database Schema
+![ClassPulse Database Diagram](assets/diagrams/classpulse-db.png)
+
+---
+
+## MVC / Client-Server Flow
+![ClassPulse MVC Flow](assets/diagrams/classpulse-mvc.png)
 
 ---
 
